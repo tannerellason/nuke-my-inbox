@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1031401823307",
+    "project_id": "nuke-my-inbox",
+    "storage_bucket": "nuke-my-inbox.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031401823307:android:059c82c8487d48327581ce",
+        "android_client_info": {
+          "package_name": "com.example.nuke_my_inbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031401823307-h0njtbgqim41lmlqlv26rvm7is9t3dm1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nuke_my_inbox",
+            "certificate_hash": "4f75f424ad78179b4aef65a51258dd1e0ccf46a7"
+          }
+        },
+        {
+          "client_id": "1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaMaeSoycpTBaaPThOVvwwRK-uuCFaKhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031401823307-ckkg0a3pk9p9itlorvipguk4e9dfv2ns.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1031401823307-g0sbd9mdkf8df43o44ii4ikkr3op2ccb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.google.firebase.presents.demo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
