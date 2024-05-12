@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1031401823307-8ar0rsa8degu9m83hspjj4vrmc7o13vt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nuke_my_inbox",
+            "certificate_hash": "abd2b003236e1a8b6a7d6a675f3fe27d16950021"
+          }
+        },
+        {
           "client_id": "1031401823307-h0njtbgqim41lmlqlv26rvm7is9t3dm1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

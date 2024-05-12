@@ -33,10 +33,3 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-
-
-      // child: SignInButton(
-      //   Buttons.Google,
-      //   text: "Sign in with Google",
-      //   onPressed: () {},
-      // )

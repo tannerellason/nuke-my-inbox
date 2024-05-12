@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'app_state.dart';
 import 'settings_screen.dart';
 import 'login_screen.dart';
+import 'flagger_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,15 +31,13 @@ final _router = GoRouter(
           builder: (context, state) => Consumer<ApplicationState>(
             builder: (context, appState, _) => SettingsScreen(),
           ),
-          routes: [
-            GoRoute(
-              path: 'future',
-              builder: (context, state) => Consumer<ApplicationState>(
-                builder: (context, appState, _) => Placeholder(),
-              )
-            )
-          ]
         ),
+        GoRoute(
+          path: 'senderFlagger',
+          builder: (context, state) => Consumer<ApplicationState>(
+            builder: (context, appState, _) => FlaggerScreen(),
+          )
+        )
       ]
     ),
   ],

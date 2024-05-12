@@ -26,7 +26,7 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
   }
 
-  //All global variables go here
+  List<SenderProfile>? senderProfiles;
 
   bool _loggedIn = false; // Authentication does NOT persist between sessions. This is on purpose.
   bool get loggedIn => _loggedIn;
@@ -132,6 +132,8 @@ class ApplicationState extends ChangeNotifier {
     int count = 0;
 
     while (true) {
+      if (loggedIn == false) break;
+
       ListMessagesResponse response;
 
       pageToken == ""
@@ -170,14 +172,14 @@ class ApplicationState extends ChangeNotifier {
       if (count >= messageCount) break;
     } 
 
-    processEmails(gmailApi, messages);
+    if (loggedIn == true) processEmails(gmailApi, messages);
   }
 
   Future<void> processEmails(GmailApi gmailApi, List<Message> messages) async {
     Profile profile = await gmailApi.users.getProfile("me");
     String userEmail = profile.emailAddress!;
 
-    List<SenderProfile> senderProfiles = [];
+    List<SenderProfile> senders = [];
     statusMessage = "Processing emails...";
 
     for (Message message in messages) {
@@ -185,16 +187,16 @@ class ApplicationState extends ChangeNotifier {
       if (sender.contains(userEmail)) continue;
       bool flag = false;
       
-      for (int i = 0; i < senderProfiles.length; i++) {
-        SenderProfile profile = senderProfiles[i];
+      for (int i = 0; i < senders.length; i++) {
+        SenderProfile profile = senders[i];
 
         if (profile.sender != sender) continue;
 
         profile.addMessage(message);
-        while (i != 0 && senderProfiles[i - 1].numberOfMessages < senderProfiles[i].numberOfMessages) {
-          var temp = senderProfiles[i];
-          senderProfiles[i] = senderProfiles[i - 1];
-          senderProfiles[i - 1] = temp;
+        while (i != 0 && senders[i - 1].numberOfMessages < senders[i].numberOfMessages) {
+          var temp = senders[i];
+          senders[i] = senders[i - 1];
+          senders[i - 1] = temp;
           i--;
         }
         flag = true;
@@ -203,39 +205,22 @@ class ApplicationState extends ChangeNotifier {
 
       if (!flag) {
         SenderProfile profile = SenderProfile(sender, message);
-        senderProfiles.add(profile);
+        senders.add(profile);
 
       }
 
     }
 
-
-  //   Map<String, List<Message>> msgMap = {};
-
-  //   int count = 0;
-
-  //   for (Message message in messages) {
-  //     String sender = getSender(message);
-
-  //     if (msgMap.containsKey(sender)) {
-  //       List<Message>? messagesFromSender = msgMap[sender];
-  //       messagesFromSender?.add(message);
-  //       msgMap[sender] = messagesFromSender!;
-  //     } else {
-  //       msgMap[sender] = [message];
-  //     }
-  //     count++;
-  //     print('Processed email #$count');
-  //   }
-
     statusMessage = 'Done processing';
 
-    for (SenderProfile sender in senderProfiles) {
+    for (SenderProfile sender in senders) {
       if (sender.numberOfMessages < 10) continue;
       print(sender.sender);
       print(sender.numberOfMessages);
       sender.flagged = true;
     }
+
+    senderProfiles = senders;
   }
 
   String getSender(Message msg) {
