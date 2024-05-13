@@ -31,42 +31,42 @@ class SettingsScreen extends StatelessWidget {
               Padding(padding: EdgeInsets.all(16)),
             ]
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Padding(padding: EdgeInsets.only(left: 50)),
-              SegmentedButton(
-                segments: const [
-                  ButtonSegment(
-                    value: 1,
-                    label: Text('Trash'),
-                    icon: Icon(Icons.delete_outline),
-                  ),
-                  ButtonSegment(
-                    value: 2,
-                    label: Text('Delete'),
-                    icon: Icon(Icons.delete_forever_outlined),
-                  ),
-                  ButtonSegment(
-                    value: 3,
-                    label: Text('Starred'),
-                    icon: Icon(Icons.star_outline),
-                  ),
-                  ButtonSegment(
-                    value: 4,
-                    label: Text('Nothing'),
-                    icon: Icon(Icons.cancel_outlined),
-                  ),
-                ],
-                selected: Provider.of<ApplicationState>(context, listen: false).currentDestinationSet,
-                onSelectionChanged: (newSelection) {
-                  print(newSelection);
-                  Provider.of<ApplicationState>(context, listen: false).currentDestinationSet = {newSelection.first};
-                  print(Provider.of<ApplicationState>(context, listen: false).currentDestinationSet);
-                }
-              )
-            ]
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     const Padding(padding: EdgeInsets.only(left: 50)),
+          //     SegmentedButton(
+          //       segments: const [
+          //         ButtonSegment(
+          //           value: 1,
+          //           label: Text('Trash'),
+          //           icon: Icon(Icons.delete_outline),
+          //         ),
+          //         ButtonSegment(
+          //           value: 2,
+          //           label: Text('Delete'),
+          //           icon: Icon(Icons.delete_forever_outlined),
+          //         ),
+          //         ButtonSegment(
+          //           value: 3,
+          //           label: Text('Starred'),
+          //           icon: Icon(Icons.star_outline),
+          //         ),
+          //         ButtonSegment(
+          //           value: 4,
+          //           label: Text('Nothing'),
+          //           icon: Icon(Icons.cancel_outlined),
+          //         ),
+          //       ],
+          //       selected: Provider.of<ApplicationState>(context, listen: false).currentDestinationSet,
+          //       onSelectionChanged: (newSelection) {
+          //         print(newSelection);
+          //         Provider.of<ApplicationState>(context, listen: false).currentDestinationSet = {newSelection.first};
+          //         print(Provider.of<ApplicationState>(context, listen: false).currentDestinationSet);
+          //       }
+          //     )
+          //   ]
+          // ),
           const Padding(padding: EdgeInsets.only(top: 20)),
           const Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -75,7 +75,7 @@ class SettingsScreen extends StatelessWidget {
               Icon(Icons.send),
               Padding(padding: EdgeInsets.all(8)),
               Text(
-                'What should happen with the unsubscribe links?',
+                'What should happen?',
               ),
             ],
           ),
@@ -112,7 +112,7 @@ class SettingsScreen extends StatelessWidget {
                 }
               ),
               const Padding(padding: EdgeInsets.only(left: 10)),
-              const Text('Automatically attempt to unsubscribe'),
+              const Text('Attempt to unsubscribe'),
             ]
           ),
           Row(
@@ -144,6 +144,12 @@ class SettingsScreen extends StatelessWidget {
               )
             ]
           ),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Please wait for emails to be collected and processed"),
+            ]
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -156,7 +162,9 @@ class SettingsScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.go('future');
+          if (Provider.of<ApplicationState>(context, listen: false).doneProcessing) {
+            context.go('/flagger');
+          }
         },
         tooltip: 'Next page',
         child: const Icon(Icons.navigate_next),

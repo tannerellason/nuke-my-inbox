@@ -27,6 +27,13 @@ class ApplicationState extends ChangeNotifier {
   }
 
   List<SenderProfile>? senderProfiles;
+  
+  bool _doneProcessing = false;
+  bool get doneProcessing => _doneProcessing;
+  set doneProcessing(bool value) {
+    _doneProcessing = value;
+    notifyListeners();
+  }
 
   bool _loggedIn = false; // Authentication does NOT persist between sessions. This is on purpose.
   bool get loggedIn => _loggedIn;
@@ -119,15 +126,21 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<void> collectEmails(GmailApi gmailApi) async {
-    Profile profile = await gmailApi.users.getProfile("me");
-    int messageCount = profile.messagesTotal!;
+    // Profile profile = await gmailApi.users.getProfile("me");
+    // int messageCount = profile.messagesTotal!;
+    int messageCount = 20;
 
     final stopwatch = Stopwatch();
     stopwatch.start();
     List<Message> messages = [];
 
     String? pageToken = "";
-    int emailsToCollectPerCall = 100;
+    int emailsToCollectPerCall = 0;
+    if (messageCount < 500) {
+      emailsToCollectPerCall = messageCount;
+    } else {
+      emailsToCollectPerCall = 500;
+    }
 
     int count = 0;
 
@@ -144,7 +157,7 @@ class ApplicationState extends ChangeNotifier {
 
       for (Message message in response.messages!) {
         final Message msg =
-            await gmailApi.users.messages.get("me", message.id!);
+            await gmailApi.users.messages.get("me", message.id!, format: "full");
         
         messages.add(msg);
         count++;
@@ -164,8 +177,8 @@ class ApplicationState extends ChangeNotifier {
         }
 
         statusMessage = 'Collected $count of $messageCount emails, ${messagesPerSecond.toStringAsPrecision(3)}/s'
-            '\n ${secondsElapsed.toInt()} seconds elapsed'
-            '\n $estimatedTimeLeft';
+            '\n$estimatedTimeLeft'
+            '\n${secondsElapsed.toInt()} seconds elapsed';
       }
 
       if (response.resultSizeEstimate! < emailsToCollectPerCall) break; // KEEP
@@ -221,6 +234,10 @@ class ApplicationState extends ChangeNotifier {
     }
 
     senderProfiles = senders;
+    _doneProcessing = true;
+    for (var sender in senders) {
+      sender.getUnsubLinks();
+    }
   }
 
   String getSender(Message msg) {
@@ -254,3 +271,4 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 }
+

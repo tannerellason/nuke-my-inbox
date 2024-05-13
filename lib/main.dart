@@ -33,7 +33,7 @@ final _router = GoRouter(
           ),
         ),
         GoRoute(
-          path: 'senderFlagger',
+          path: 'flagger',
           builder: (context, state) => Consumer<ApplicationState>(
             builder: (context, appState, _) => FlaggerScreen(),
           )
