@@ -128,7 +128,7 @@ class ApplicationState extends ChangeNotifier {
   Future<void> collectEmails(GmailApi gmailApi) async {
     // Profile profile = await gmailApi.users.getProfile("me");
     // int messageCount = profile.messagesTotal!;
-    int messageCount = 75;
+    int messageCount = 1500;
 
     final stopwatch = Stopwatch();
     stopwatch.start();
@@ -223,20 +223,11 @@ class ApplicationState extends ChangeNotifier {
     }
     statusMessage = 'Done processing';
 
-    for (SenderProfile sender in senders) {
-      if (sender.numberOfMessages < 10) continue;
-      print(sender.sender);
-      print(sender.numberOfMessages);
-      sender.flagged = true;
-    }
-
     senderProfiles = senders;
     _doneProcessing = true;
     for (var sender in senders) {
       sender.getUnsubLinks();
     }
-
-    for (String str in mimeTypes) print(str);
   }
 
   String getSender(Message msg) {
