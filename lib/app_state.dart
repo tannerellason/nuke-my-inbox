@@ -128,13 +128,14 @@ class ApplicationState extends ChangeNotifier {
   Future<void> collectEmails(GmailApi gmailApi) async {
     // Profile profile = await gmailApi.users.getProfile("me");
     // int messageCount = profile.messagesTotal!;
-    int messageCount = 20;
+    int messageCount = 75;
 
     final stopwatch = Stopwatch();
     stopwatch.start();
     List<Message> messages = [];
 
     String? pageToken = "";
+
     int emailsToCollectPerCall = 0;
     if (messageCount < 500) {
       emailsToCollectPerCall = messageCount;
@@ -191,20 +192,20 @@ class ApplicationState extends ChangeNotifier {
   Future<void> processEmails(GmailApi gmailApi, List<Message> messages) async {
     Profile profile = await gmailApi.users.getProfile("me");
     String userEmail = profile.emailAddress!;
+    List<String> mimeTypes = [];
 
     List<SenderProfile> senders = [];
     statusMessage = "Processing emails...";
 
     for (Message message in messages) {
       String sender = getSender(message);
+      String mimeType = message.payload!.mimeType!;
+      if (!mimeTypes.contains(mimeType)) mimeTypes.add(mimeType);
       if (sender.contains(userEmail)) continue;
       bool flag = false;
-      
       for (int i = 0; i < senders.length; i++) {
         SenderProfile profile = senders[i];
-
         if (profile.sender != sender) continue;
-
         profile.addMessage(message);
         while (i != 0 && senders[i - 1].numberOfMessages < senders[i].numberOfMessages) {
           var temp = senders[i];
@@ -215,15 +216,11 @@ class ApplicationState extends ChangeNotifier {
         flag = true;
         break;
       }
-
       if (!flag) {
         SenderProfile profile = SenderProfile(sender, message);
         senders.add(profile);
-
       }
-
     }
-
     statusMessage = 'Done processing';
 
     for (SenderProfile sender in senders) {
@@ -238,6 +235,8 @@ class ApplicationState extends ChangeNotifier {
     for (var sender in senders) {
       sender.getUnsubLinks();
     }
+
+    for (String str in mimeTypes) print(str);
   }
 
   String getSender(Message msg) {

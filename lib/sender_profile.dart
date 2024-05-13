@@ -1,7 +1,9 @@
-// ignore_for_file: unnecessary_getters_setters
+// ignore_for_file: avoid_print, prefer_final_fields, unnecessary_getters_setters, curly_braces_in_flow_control_structures
 
 import "package:googleapis/gmail/v1.dart";
 import "dart:convert";
+import "package:html/parser.dart" as html_parser;
+import "package:html/dom.dart" as html_dom;
 
 class SenderProfile {
 
@@ -27,21 +29,38 @@ class SenderProfile {
   }
 
   void getUnsubLinks() {
-    Codec<String, String> decoder = utf8.fuse(base64);
-    print(sender);
-
     for (Message message in _messages) {
-      print(message.payload!.filename);
-      String? mimeType = message.payload!.mimeType;
-      if (mimeType! == "text/html") {
-        print(decoder.decode(message.payload!.body!.data!));
-      }
-      // MessagePart part = message.payload!.parts![0];
-      // MessagePartBody body = part.body!;
-      // String data = body.data!;
-      // String decoded = decoder.decode(data);
-      // print(decoded);
+      getLink(message.payload!);
     }
+  }
+
+  void getLink(MessagePart payload) {
+    String link = "";
+    switch (payload.mimeType) {
+      case "text/html":
+        link = getHtmlData(payload.body!.data!);
+        break;
+    }
+    print(link);
+  }
+
+  String getHtmlData(String htmlData) {
+    String link = "No unsub link found";
+
+    html_dom.Document document = html_parser.parse(htmlData);
+    
+    for (var node in document.nodes) {
+      if (node.nodeType != html_dom.Node.TEXT_NODE) continue;
+      if (!node.text!.toLowerCase().contains('unsubscribe')) continue;
+
+      if (node.parentNode != null && node.parentNode is html_dom.Element) {
+        html_dom.Element parent = node.parentNode as html_dom.Element;
+
+        if (parent.localName == "a") link = parent.attributes['href'] ?? 'No unsub link found';
+      }
+    }
+
+    return link;
   }
 
   SenderProfile(String sender, Message firstMessage) {

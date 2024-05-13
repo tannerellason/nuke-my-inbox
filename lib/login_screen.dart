@@ -24,12 +24,6 @@ class LoginScreen extends StatelessWidget {
           },
         )
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //   },
-      //   tooltip: 'Next Page',
-      //   child: const Icon(Icons.navigate_next),
-      // ),
     );
   }
 }
