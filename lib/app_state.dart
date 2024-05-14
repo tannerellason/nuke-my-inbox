@@ -1,4 +1,4 @@
-//ignore_for_file: avoid_print, prefer_final_fields, use_build_context_synchronously
+//ignore_for_file: avoid_print, prefer_final_fields, use_build_context_synchronously, curly_braces_in_flow_control_structures
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -126,9 +126,16 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<void> collectEmails(GmailApi gmailApi) async {
-    // Profile profile = await gmailApi.users.getProfile("me");
-    // int messageCount = profile.messagesTotal!;
-    int messageCount = 1500;
+    Profile profile = await gmailApi.users.getProfile("me");
+    int profileMessages = profile.messagesTotal!;
+
+    int userSetMessages = 150;
+
+    bool collectAll = false; // Allow user to control this eventually
+
+    int messageCount = 0;
+    if (collectAll) messageCount = profileMessages; // ignore: dead_code
+    else messageCount = userSetMessages;
 
     final stopwatch = Stopwatch();
     stopwatch.start();
@@ -169,17 +176,22 @@ class ApplicationState extends ChangeNotifier {
         int secondsLeft = messagesLefft ~/ messagesPerSecond;
 
         String estimatedTimeLeft = "";
-        if (secondsLeft > 60) 
-        {
+        if (secondsLeft > 60) {
           estimatedTimeLeft = '${secondsLeft ~/ 60} minutes, ${secondsLeft % 60} seconds remaining';
-        }
-        else {
+        } else {
           estimatedTimeLeft = '$secondsLeft seconds remaining';
         }
 
+        String timeElapsed = "";
+        if (secondsElapsed > 60) {
+          timeElapsed = '${secondsElapsed ~/ 60} minutes, ${secondsElapsed % 60} seconds elapsed';
+        } else {
+          timeElapsed = '${secondsElapsed.toInt()} seconds elapsed';
+        }
+
         statusMessage = 'Collected $count of $messageCount emails, ${messagesPerSecond.toStringAsPrecision(3)}/s'
-            '\n$estimatedTimeLeft'
-            '\n${secondsElapsed.toInt()} seconds elapsed';
+            '\n$timeElapsed'
+            '\n$estimatedTimeLeft';
       }
 
       if (response.resultSizeEstimate! < emailsToCollectPerCall) break; // KEEP
@@ -221,7 +233,7 @@ class ApplicationState extends ChangeNotifier {
         senders.add(profile);
       }
     }
-    statusMessage = 'Done processing';
+    statusMessage = 'Done collecting and processing';
 
     senderProfiles = senders;
     _doneProcessing = true;

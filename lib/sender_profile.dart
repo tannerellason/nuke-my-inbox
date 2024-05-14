@@ -49,7 +49,7 @@ void getLink(MessagePart payload) {
     case "text/plain":
       link = getPlainLink(decoder.decode(payload.body!.data!));
       break;
-    case "multipart/alternative" || "multipart/mixed" || "multipart/related":
+    case "multipart/alternative" || "multipart/mixed" || "multipart/related" || "multipart/signed":
       link = getMultipartLink(payload);
       break;
   }

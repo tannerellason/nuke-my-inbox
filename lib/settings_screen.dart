@@ -18,19 +18,19 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(padding: EdgeInsets.all(10)),
-              Icon(Icons.location_pin),
-              Padding(padding: EdgeInsets.all(8)),
-              Text(
-                'What should happen to flagged emails?',
-              ),
-              Padding(padding: EdgeInsets.all(16)),
-            ]
-          ),
+        children: [
+          // const Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     Padding(padding: EdgeInsets.all(10)),
+          //     Icon(Icons.location_pin),
+          //     Padding(padding: EdgeInsets.all(8)),
+          //     Text(
+          //       'What should happen to flagged emails?',
+          //     ),
+          //     Padding(padding: EdgeInsets.all(16)),
+          //   ]
+          // ),
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.start,
           //   children: [
@@ -67,83 +67,72 @@ class SettingsScreen extends StatelessWidget {
           //     )
           //   ]
           // ),
-          const Padding(padding: EdgeInsets.only(top: 20)),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(padding: EdgeInsets.all(10)),
-              Icon(Icons.send),
-              Padding(padding: EdgeInsets.all(8)),
-              Text(
-                'What should happen?',
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Padding(padding: EdgeInsets.only(left: 50)),
-              Switch(
-                value: Provider.of<ApplicationState>(context, listen: false).compileInTextFile,
-                activeColor: Colors.deepPurple,
-                onChanged: (bool value) {
-                  print(value);
-                  Provider.of<ApplicationState>(context, listen: false).compileInTextFile = value;
-                  print(Provider.of<ApplicationState>(context, listen: false).compileInTextFile);
-                }
-              ),
-              const Padding(padding: EdgeInsets.only(left: 10)),
-              const Text(
-                'Compile them all in a .txt file',
-              ),
-            ]
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Padding(padding: EdgeInsets.only(left: 50)),
-              Switch(
-                value: Provider.of<ApplicationState>(context, listen: false).attemptUnsubscribes,
-                activeColor: Colors.deepPurple,
-                onChanged: (bool value) {
-                  print(value);
-                  Provider.of<ApplicationState>(context, listen: false).attemptUnsubscribes = value;
-                  print(Provider.of<ApplicationState>(context, listen: false).attemptUnsubscribes);
-                }
-              ),
-              const Padding(padding: EdgeInsets.only(left: 10)),
-              const Text('Attempt to unsubscribe'),
-            ]
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Padding(padding: EdgeInsets.only(left: 50)),
-              Switch(
-                value: Provider.of<ApplicationState>(context, listen: false).blockSenders,
-                activeColor: Colors.deepPurple,
-                onChanged: (bool value) {
-                  print(value);
-                  Provider.of<ApplicationState>(context, listen: false).blockSenders = value;
-                  print(Provider.of<ApplicationState>(context, listen: false).blockSenders);
-                }
-              ),
-              const Padding(padding: EdgeInsets.only(left: 10)),
-              const Text('Block all flagged senders'),
-            ]
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Padding(padding: EdgeInsets.only(left: 50)),
-              TextButton(
-                onPressed: () {
-                  Provider.of<ApplicationState>(context, listen: false).signOut(context);
-                },
-                child: const Text('Sign out'),
-              )
-            ]
-          ),
+          // const Padding(padding: EdgeInsets.only(top: 20)),
+          // const Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     Padding(padding: EdgeInsets.all(10)),
+          //     Icon(Icons.send),
+          //     Padding(padding: EdgeInsets.all(8)),
+          //     Text(
+          //       'What should happen?',
+          //     ),
+          //   ],
+          // ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     const Padding(padding: EdgeInsets.only(left: 50)),
+          //     Switch(
+          //       value: Provider.of<ApplicationState>(context, listen: false).compileInTextFile,
+          //       activeColor: Colors.deepPurple,
+          //       onChanged: (bool value) {
+          //         print(value);
+          //         Provider.of<ApplicationState>(context, listen: false).compileInTextFile = value;
+          //         print(Provider.of<ApplicationState>(context, listen: false).compileInTextFile);
+          //       }
+          //     ),
+          //     const Padding(padding: EdgeInsets.only(left: 10)),
+          //     const Text(
+          //       'Compile them all in a .txt file',
+          //     ),
+          //   ]
+          // ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     const Padding(padding: EdgeInsets.only(left: 50)),
+          //     Switch(
+          //       value: Provider.of<ApplicationState>(context, listen: false).attemptUnsubscribes,
+          //       activeColor: Colors.deepPurple,
+          //       onChanged: (bool value) {
+          //         print(value);
+          //         Provider.of<ApplicationState>(context, listen: false).attemptUnsubscribes = value;
+          //         print(Provider.of<ApplicationState>(context, listen: false).attemptUnsubscribes);
+          //       }
+          //     ),
+          //     const Padding(padding: EdgeInsets.only(left: 10)),
+          //     const Text('Attempt to unsubscribe'),
+          //   ]
+          // ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     const Padding(padding: EdgeInsets.only(left: 50)),
+          //     Switch(
+          //       value: Provider.of<ApplicationState>(context, listen: false).blockSenders,
+          //       activeColor: Colors.deepPurple,
+          //       onChanged: (bool value) {
+          //         print(value);
+          //         Provider.of<ApplicationState>(context, listen: false).blockSenders = value;
+          //         print(Provider.of<ApplicationState>(context, listen: false).blockSenders);
+          //       }
+          //     ),
+          //     const Padding(padding: EdgeInsets.only(left: 10)),
+          //     const Text('Block all flagged senders'),
+          //   ]
+          // ),
+          const Padding(padding: EdgeInsets.only(top: 100)),
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -157,7 +146,18 @@ class SettingsScreen extends StatelessWidget {
                 Provider.of<ApplicationState>(context).statusMessage,
               )
             ],
-          )
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Provider.of<ApplicationState>(context, listen: false).signOut(context);
+                },
+                child: const Text('Sign out'),
+              )
+            ]
+          ),
         ]
       ),
       floatingActionButton: FloatingActionButton(
