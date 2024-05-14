@@ -5,11 +5,16 @@
     - Change title
     - Have progress text for processing
     - Give user the ability to control the amount of emails collected or to just collect them all
+    - Fix justification of status messages
+    - Automatically move to flagger screen when done processing
 
 - Flagger screen:
     - Implement settings per email adress
         - Delete, star, trash, leave? Attempt to unsub? etc
     - Give more info on each sender (example of email snippet, date of most recent email) 
+    - Don't load all senders at once. Start with just those with over 10 emails sent, then those with more than 3, then all. Add a "load more" button at the bottom
+    - Add the option to sort by other methods than just # of emails sent (Date of most recent email, etc)
+    - Some email names have quotes around them and some don't? Standardize this
 
 - Action screen:
     - Implement. This is where the user chosen actions will happen
