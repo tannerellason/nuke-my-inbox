@@ -3,39 +3,61 @@ import 'package:provider/provider.dart';
 import 'app_state.dart';
 import 'sender_profile.dart';
 
-
 class FlaggerScreen extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
   const FlaggerScreen();
 
-  List<Container> _buildList(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+  List<Widget> _buildList(BuildContext context) {
     List<SenderProfile>? senderProfiles = Provider.of<ApplicationState>(context).senderProfiles;
-    List<Container> containerList = [];
+    List<Widget> widgetList = [];
+    widgetList.add(const Padding(padding: EdgeInsets.only(top: 30)));
     
     for (SenderProfile senderProfile in senderProfiles!) {
-      containerList.add(Container(
-        width: width,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text("Sender: ${senderProfile.sender}"),
-                const Text("Flag?"),
-              ]
-            )
-          ],
-        )
-      ));
-    }
+      if (senderProfile.numberOfUnsubLinks == 0) continue;
+      
 
-    return containerList;
+      widgetList.addAll([
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(senderProfile.name),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(senderProfile.email),
+          ]
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("${senderProfile.numberOfMessages} messages, " 
+                  "${senderProfile.numberOfUnsubLinks} unsubscribe links found")
+          ]
+        ),
+        const Divider(),
+      ]);
+
+      if (senderProfile.name == "NO NAME FOUND" || senderProfile.email == "NO EMAIL FOUND") {
+        widgetList[widgetList.length - 3] = const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("")]);
+        widgetList[widgetList.length - 4] = Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(senderProfile.sender)]);
+      }
+    }
+    widgetList.removeLast(); // No divider at the very end, looks tacky
+
+    return widgetList;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: _buildList(context),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sender list')
+      ),
+      body: ListView(
+        children: _buildList(context),
+      )
     );
   }
 }

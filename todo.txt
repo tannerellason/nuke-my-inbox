@@ -1,0 +1,27 @@
+- Login screen:
+    - Fix size and bg color of Sign In with Google button
+
+- Loading screen:
+    - Change title
+    - Have progress text for processing
+    - Give user the ability to control the amount of emails collected or to just collect them all
+
+- Flagger screen:
+    - Implement settings per email adress
+        - Delete, star, trash, leave? Attempt to unsub? etc
+    - Give more info on each sender (example of email snippet, date of most recent email) 
+
+- Action screen:
+    - Implement. This is where the user chosen actions will happen
+
+- app_state.dart:
+    - CLEAN UP THE FUCKING CODE HOLY SHIT ITS MONSTROUS
+    - Move some functions to sender_profile.dart
+    - Move authentication to separate file
+    - Move all gmail stuff to separate file
+
+- sender_profile.dart:
+    - Clean up code
+    - Move some functions to other files
+
+- Create slideshow

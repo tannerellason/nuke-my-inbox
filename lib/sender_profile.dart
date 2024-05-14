@@ -18,6 +18,12 @@ class SenderProfile {
   String _sender = "UNKNOWN SENDER";
   String get sender => _sender;
 
+  String _email = "UNKNOWN EMAIL";
+  String get email => _email;
+
+  String _name = "UNKNOWN NAME";
+  String get name => _name;
+
   List<Message> _messages = [];
   List<Message> get messages => _messages;
 
@@ -25,6 +31,7 @@ class SenderProfile {
   List<String> get unsubLinks => _unsubLinks;
 
   int get numberOfMessages => _messages.length;
+  int get numberOfUnsubLinks => _unsubLinks.length;
 
   void addMessage(Message messageToAdd) {
     _messages.add(messageToAdd);
@@ -94,6 +101,7 @@ String getHtmlLink(String htmlData) {
 }
 
 String getMultipartLink(MessagePart payload) {
+  if (payload.parts == null) return "No unsub links found";
   for (MessagePart part in payload.parts!) {
     if (part.mimeType == 'text/html') 
       return getHtmlLink(decoder.decode(part.body!.data!));
@@ -110,5 +118,13 @@ String getMultipartLink(MessagePart payload) {
     _sender = sender;
     _messages = <Message>[firstMessage];
     _flagged = true;
+    _name = "NO NAME FOUND";
+    _email = "NO EMAIL FOUND";
+
+    List<String> senderSplit = sender.split('<');
+    if (senderSplit.length <= 1) return;
+    if (senderSplit[0].length <= 1 || senderSplit[1].length <= 1) return;
+    _name = senderSplit[0].substring(0, senderSplit[0].length - 1);
+    _email = senderSplit[1].substring(0, senderSplit[1].length - 1);
   }
 }

@@ -129,13 +129,13 @@ class ApplicationState extends ChangeNotifier {
     Profile profile = await gmailApi.users.getProfile("me");
     int profileMessages = profile.messagesTotal!;
 
-    int userSetMessages = 150;
+    int userSetMessages = 3000;
 
     bool collectAll = false; // Allow user to control this eventually
 
     int messageCount = 0;
     if (collectAll) messageCount = profileMessages; // ignore: dead_code
-    else messageCount = userSetMessages;
+    else messageCount = userSetMessages; // ignore: dead_code
 
     final stopwatch = Stopwatch();
     stopwatch.start();
@@ -184,7 +184,7 @@ class ApplicationState extends ChangeNotifier {
 
         String timeElapsed = "";
         if (secondsElapsed > 60) {
-          timeElapsed = '${secondsElapsed ~/ 60} minutes, ${secondsElapsed % 60} seconds elapsed';
+          timeElapsed = '${secondsElapsed ~/ 60} minutes, ${secondsElapsed.toInt() % 60} seconds elapsed';
         } else {
           timeElapsed = '${secondsElapsed.toInt()} seconds elapsed';
         }
