@@ -1,5 +1,6 @@
 - TOP PRIORITY
     - Logging out doesn't work. Signing into another account after logging out will collect emails from both accounts
+    - Sign out the user fully upon opening the app, authentication should not carry over
 
 - Loading screen:
     - Change title
