@@ -126,12 +126,13 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<void> collectEmails(GmailApi gmailApi) async {
+
     Profile profile = await gmailApi.users.getProfile("me");
     int profileMessages = profile.messagesTotal!;
 
     int userSetMessages = 3000;
 
-    bool collectAll = false; // Allow user to control this eventually
+    bool collectAll = true; // Allow user to control this eventually
 
     int messageCount = 0;
     if (collectAll) messageCount = profileMessages; // ignore: dead_code

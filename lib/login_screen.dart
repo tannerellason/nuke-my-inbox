@@ -16,12 +16,13 @@ class LoginScreen extends StatelessWidget {
         title: const Text('Log in to Nuke My Inbox'),
       ),
       body: Center(
-        child: SignInButton(
-          Buttons.Google,
-          text: "Sign in with Google",
+        child: SignInButtonBuilder(
+          text: 'Sign in with Google',
+          icon: Icons.login,
           onPressed: () {
             Provider.of<ApplicationState>(context, listen: false).signInWithGoogle(context);
           },
+          backgroundColor: ThemeData.dark(useMaterial3: true).scaffoldBackgroundColor,
         )
       ),
     );
