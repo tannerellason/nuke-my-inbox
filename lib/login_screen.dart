@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
-import 'package:nuke_my_inbox/app_state.dart';
+import 'gmail_handler.dart';
 
 // import 'app_state.dart';
 
@@ -20,7 +20,7 @@ class LoginScreen extends StatelessWidget {
           text: 'Sign in with Google',
           icon: Icons.login,
           onPressed: () {
-            Provider.of<ApplicationState>(context, listen: false).signInWithGoogle(context);
+            Provider.of<Gmailhandler>(context, listen: false).signInWithGoogle(context);
           },
           backgroundColor: ThemeData.dark(useMaterial3: true).scaffoldBackgroundColor,
         )

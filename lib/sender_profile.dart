@@ -18,19 +18,13 @@ class SenderProfile {
   String get name => _name;
 
   List<Message> _messages = [];
-  List<Message> get messages => _messages;
+  void addMessage(Message message) => { _messages.add(message) };
+  int get numberOfMessages => _messages.length;
 
   List<String> _unsubLinks = [];
-  List<String> get unsubLinks => _unsubLinks;
-  void addLink(String link) {
-    if (link != '') _unsubLinks.add(link);
-  }
-
-  int get numberOfMessages => _messages.length;
+  void addLink(String link) => { if (link != '') _unsubLinks.add(link) };
   int get numberOfUnsubLinks => _unsubLinks.length;
-  void addMessage(Message messageToAdd) {
-    _messages.add(messageToAdd);
-  }
+
 
   SenderProfile(String sender, Message message, String link) {
     _sender = sender;

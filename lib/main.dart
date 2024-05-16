@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-import 'app_state.dart';
-import 'settings_screen.dart';
+import 'gmail_handler.dart';
+import 'loading_screen.dart';
 import 'login_screen.dart';
 import 'flagger_screen.dart';
 
@@ -13,7 +13,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(ChangeNotifierProvider(
-    create: (context) => ApplicationState(),
+    create: (context) => Gmailhandler(),
     builder: ((context, child) => const MyApp()),
   ));
 }
@@ -22,19 +22,19 @@ final _router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => Consumer<ApplicationState>(
+      builder: (context, state) => Consumer<Gmailhandler>(
         builder: (context, appState, _) => LoginScreen(),
       ),
       routes: <RouteBase>[
         GoRoute(
-          path: 'settings',
-          builder: (context, state) => Consumer<ApplicationState>(
-            builder: (context, appState, _) => SettingsScreen(),
+          path: 'loading',
+          builder: (context, state) => Consumer<Gmailhandler>(
+            builder: (context, appState, _) => LoadingScreen(),
           ),
         ),
         GoRoute(
           path: 'flagger',
-          builder: (context, state) => Consumer<ApplicationState>(
+          builder: (context, state) => Consumer<Gmailhandler>(
             builder: (context, appState, _) => FlaggerScreen(),
           )
         )

@@ -1,6 +1,8 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
@@ -8,8 +10,10 @@ import 'package:googleapis/gmail/v1.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as html_dom;
 import 'dart:convert';
+import 'package:go_router/go_router.dart';
 
 import 'sender_profile.dart';
+import 'firebase_options.dart';
 
 
 /*
@@ -20,11 +24,24 @@ import 'sender_profile.dart';
     - Grab the unsubscribe links from messages
 */
 
-class Gmailhandler {
-  String _status = '';
-  String get status => _status;
+class Gmailhandler extends ChangeNotifier {
+  Gmailhandler() {
+    init();
+  }
+
+  Future<void> init() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+    FirebaseAuth.instance.userChanges().listen((user) {
+      if (user != null) initGmailApi();
+    });
+  }
+
+  String _statusMessage = '';
+  String get statusMessage => _statusMessage;
 
   List<SenderProfile> _senderProfiles = []; // ignore: prefer_final_fields
+  List<SenderProfile> get senderProfiles => _senderProfiles;
   List<Message> _messages = [];             // ignore: prefer_final_fields
   auth.AuthClient? _client;
   GmailApi? _gmailApi;
@@ -51,12 +68,13 @@ class Gmailhandler {
         ? '${secondsElapsed ~/ 60} minutes, ${secondsElapsed.toInt() % 60} seconds elapsed'
         : '${secondsElapsed.toInt()} seconds elapsed';
 
-    _status = 'Collected $count of $total emails, $roundedMessagesPerSecond/s'
+    _statusMessage = 'Collected $count of $total emails, $roundedMessagesPerSecond/s'
         '\n$timeElapsed'
         '\n$estimatedTimeLeft';
+    notifyListeners();
   }
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future<UserCredential> signInWithGoogle(BuildContext context) async {
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
@@ -66,20 +84,22 @@ class Gmailhandler {
       idToken: googleAuth?.idToken,
     );
 
+    context.go('/loading');    // ignore: use_build_context_synchronously
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut(BuildContext context) async {
     await _googleSignIn.signOut();
     await FirebaseAuth.instance.signOut();
     _client!.close();
+    context.go('/');      // ignore: use_build_context_synchronously
   }
 
   Future<void> initGmailApi() async {
     _client = await _googleSignIn.authenticatedClient();
     _gmailApi = GmailApi(_client!);
     _profile = await _gmailApi!.users.getProfile('me');
-    collectEmails(true);
+    collectEmails(false);
   }
 
   Future<void> collectEmails(bool collectAll, {int messagesToCollect = 1000}) async {
@@ -118,7 +138,7 @@ class Gmailhandler {
   }
 
   Future<void> processEmails() async {
-    _status = 'Processing emails';
+    _statusMessage = 'Processing emails';
 
     for (Message message in _messages) {
       String sender = getSenderFromHeaders(message.payload!.headers!);
@@ -140,6 +160,9 @@ class Gmailhandler {
         _senderProfiles.add(profile);
       }
     }
+
+    _senderProfiles.sort((a, b) => a.numberOfMessages.compareTo(b.numberOfMessages));
+    _statusMessage = 'Done processing';
   }
 
   String getSenderFromHeaders(List<MessagePartHeader> headers) {
@@ -210,7 +233,7 @@ class Gmailhandler {
       if (part.mimeType == 'text/plain')
         return getLinkFromPlain(decoder.decode(part.body!.data!));
 
-      else return getLinkFromMultipart(part, decoder)
+      else return getLinkFromMultipart(part, decoder);
     }
 
     return '';

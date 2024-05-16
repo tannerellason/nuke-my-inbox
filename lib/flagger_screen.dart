@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nuke_my_inbox/gmail_handler.dart';
 import 'package:provider/provider.dart';
-import 'app_state.dart';
 import 'sender_profile.dart';
 
 class FlaggerScreen extends StatelessWidget {
@@ -8,11 +8,11 @@ class FlaggerScreen extends StatelessWidget {
   const FlaggerScreen();
 
   List<Widget> _buildList(BuildContext context) {
-    List<SenderProfile>? senderProfiles = Provider.of<ApplicationState>(context).senderProfiles;
+    List<SenderProfile>? senderProfiles = Provider.of<Gmailhandler>(context).senderProfiles;
     List<Widget> widgetList = [];
     widgetList.add(const Padding(padding: EdgeInsets.only(top: 30)));
     
-    for (SenderProfile senderProfile in senderProfiles!) {
+    for (SenderProfile senderProfile in senderProfiles) {
       if (senderProfile.numberOfUnsubLinks == 0) continue;
       
 
