@@ -37,11 +37,14 @@ class Gmailhandler extends ChangeNotifier {
     });
   }
 
-  String _statusMessage = '';
+  String _statusMessage = 'Initializing Gmail API';
   String get statusMessage => _statusMessage;
 
   List<SenderProfile> _senderProfiles = []; // ignore: prefer_final_fields
-  List<SenderProfile> get senderProfiles => _senderProfiles;
+  List<SenderProfile> get senderProfiles {
+    notifyListeners();
+    return _senderProfiles;
+  }
   List<Message> _messages = [];             // ignore: prefer_final_fields
   auth.AuthClient? _client;
   GmailApi? _gmailApi;
@@ -102,7 +105,7 @@ class Gmailhandler extends ChangeNotifier {
     collectEmails(false);
   }
 
-  Future<void> collectEmails(bool collectAll, {int messagesToCollect = 1000}) async {
+  Future<void> collectEmails(bool collectAll, {int messagesToCollect = 150}) async {
     if (collectAll) messagesToCollect = _profile!.messagesTotal!;
 
     int messagesToCollectPerCall = messagesToCollect < 500 

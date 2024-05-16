@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print, prefer_final_fields, unnecessary_getters_setters, curly_braces_in_flow_control_structures
 
-import "package:googleapis/gmail/v1.dart";
+import 'package:googleapis/gmail/v1.dart';
 
 class SenderProfile {
 
@@ -8,13 +8,13 @@ class SenderProfile {
   bool get flagged => _flagged;
   set flagged(bool value) => _flagged = value;
 
-  String _sender = "UNKNOWN SENDER"; // Commonly 
+  String _sender = 'UNKNOWN SENDER'; // Commonly 
   String get sender => _sender;
 
-  String _email = "UNKNOWN EMAIL";
+  String _email = 'UNKNOWN EMAIL';
   String get email => _email;
 
-  String _name = "UNKNOWN NAME";
+  String _name = 'UNKNOWN NAME';
   String get name => _name;
 
   List<Message> _messages = [];
@@ -29,8 +29,8 @@ class SenderProfile {
   SenderProfile(String sender, Message message, String link) {
     _sender = sender;
     _flagged = true;
-    _name = "NO NAME FOUND";
-    _email = "NO EMAIL FOUND";
+    _name = 'NO NAME FOUND';
+    _email = 'NO EMAIL FOUND';
     
     addMessage(message);
     addLink(link);

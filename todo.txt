@@ -21,14 +21,4 @@
 - Action screen:
     - Implement. This is where the user chosen actions will happen
 
-- app_state.dart:
-    - Clean up the code
-    - Move some functions to sender_profile.dart
-    - Move authentication to separate file
-    - Move all gmail stuff to separate file
-
-- sender_profile.dart:
-    - Clean up code
-    - Move some functions to other files
-
 - Create slideshow

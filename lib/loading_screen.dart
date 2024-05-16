@@ -22,7 +22,7 @@ class LoadingScreen extends StatelessWidget {
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Please wait for emails to be collected and processed"),
+              Text('Please wait for emails to be collected and processed'),
             ]
           ),
           Row(

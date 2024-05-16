@@ -32,15 +32,15 @@ class FlaggerScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("${senderProfile.numberOfMessages} messages, " 
-                  "${senderProfile.numberOfUnsubLinks} unsubscribe links found")
+            Text('${senderProfile.numberOfMessages} messages, ' 
+                  '${senderProfile.numberOfUnsubLinks} unsubscribe links found')
           ]
         ),
         const Divider(),
       ]);
 
-      if (senderProfile.name == "NO NAME FOUND" || senderProfile.email == "NO EMAIL FOUND") {
-        widgetList[widgetList.length - 3] = const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("")]);
+      if (senderProfile.name == 'NO NAME FOUND' || senderProfile.email == 'NO EMAIL FOUND') {
+        widgetList[widgetList.length - 3] = const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text('')]);
         widgetList[widgetList.length - 4] = Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(senderProfile.sender)]);
       }
     }
