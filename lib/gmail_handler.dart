@@ -42,7 +42,6 @@ class Gmailhandler extends ChangeNotifier {
 
   List<SenderProfile> _senderProfiles = []; // ignore: prefer_final_fields
   List<SenderProfile> get senderProfiles {
-    notifyListeners();
     return _senderProfiles;
   }
   List<Message> _messages = [];             // ignore: prefer_final_fields
@@ -105,7 +104,7 @@ class Gmailhandler extends ChangeNotifier {
     collectEmails(false);
   }
 
-  Future<void> collectEmails(bool collectAll, {int messagesToCollect = 150}) async {
+  Future<void> collectEmails(bool collectAll, {int messagesToCollect = 50}) async {
     if (collectAll) messagesToCollect = _profile!.messagesTotal!;
 
     int messagesToCollectPerCall = messagesToCollect < 500 
@@ -147,7 +146,8 @@ class Gmailhandler extends ChangeNotifier {
       String sender = getSenderFromHeaders(message.payload!.headers!);
       String unsubLink = getLinkFromPayload(message.payload!);
 
-      if (sender.contains(_profile!.emailAddress!) || _senderProfiles.isEmpty) continue;
+      print(_senderProfiles.length);
+      if (sender.contains(_profile!.emailAddress!)) continue;
       
       bool senderFound = false;
       for (SenderProfile profile in _senderProfiles) {
@@ -156,15 +156,17 @@ class Gmailhandler extends ChangeNotifier {
         profile.addMessage(message);
         profile.addLink(unsubLink);
         senderFound = true;
+        print('Added to current profile $sender');
       }
 
       if (!senderFound) {
         SenderProfile profile = SenderProfile(sender, message, unsubLink);
         _senderProfiles.add(profile);
+        print('Added new profile $sender');
       }
     }
 
-    _senderProfiles.sort((a, b) => a.numberOfMessages.compareTo(b.numberOfMessages));
+    _senderProfiles.sort((a, b) => b.numberOfMessages.compareTo(a.numberOfMessages));
     _statusMessage = 'Done processing';
   }
 
