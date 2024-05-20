@@ -14,8 +14,6 @@ class FlaggerScreen extends StatelessWidget {
     
     for (SenderProfile senderProfile in senderProfiles) {
       if (senderProfile.numberOfUnsubLinks == 0) continue;
-      
-
       widgetList.addAll([
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,6 +32,42 @@ class FlaggerScreen extends StatelessWidget {
           children: [
             Text('${senderProfile.numberOfMessages} messages, ' 
                   '${senderProfile.numberOfUnsubLinks} unsubscribe links found')
+          ]
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Flag? \t\t\t\t'),
+            Switch(
+              value: senderProfile.flagged,
+              onChanged: (value) {
+                Provider.of<Gmailhandler>(context, listen: false).setFlagged(senderProfile, value);
+              },
+            )
+          ]
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Trash? \t\t\t\t'),
+            Switch(
+              value: senderProfile.trash,
+              onChanged: (value) {
+                Provider.of<Gmailhandler>(context, listen: false).setTrash(senderProfile, value);
+              },
+            )
+          ]
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Perma delete? \t\t'),
+            Switch(
+              value: senderProfile.permaDelete,
+              onChanged: (value) {
+                Provider.of<Gmailhandler>(context, listen: false).setPermaDelete(senderProfile, value);
+              },
+            )
           ]
         ),
         const Divider(),

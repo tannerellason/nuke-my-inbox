@@ -15,7 +15,6 @@ import 'package:go_router/go_router.dart';
 import 'sender_profile.dart';
 import 'firebase_options.dart';
 
-
 /*
     This class has many responsibilities:
     - Initialize and destroy Firebase Auth objects when user logs in / out
@@ -44,6 +43,55 @@ class Gmailhandler extends ChangeNotifier {
   List<SenderProfile> get senderProfiles {
     return _senderProfiles;
   }
+
+  List<SenderProfile> _flaggedProfiles      = []; //ignore: prefer_final_fields
+  List<SenderProfile> _trashProfiles        = []; //ignore: prefer_final_fields
+  List<SenderProfile> _permaDeleteProfiles  = []; //ignore: prefer_final_fields
+
+  void setFlagged(SenderProfile profile, bool value) {
+    if (value) {
+      profile.flagged = true;
+      if (!_flaggedProfiles.contains(profile)) _flaggedProfiles.add(profile);
+    } else {
+      profile.flagged = false;
+      profile.trash = false;
+      profile.permaDelete = false;
+      if (_flaggedProfiles.contains(profile)) _flaggedProfiles.remove(profile);
+      if (_trashProfiles.contains(profile)) _trashProfiles.remove(profile);
+    }
+    notifyListeners();
+  }
+
+  void setTrash(SenderProfile profile, bool value) {
+    if (value) {
+      profile.flagged = true;
+      profile.trash = true;
+      if (!_flaggedProfiles.contains(profile)) _flaggedProfiles.add(profile);
+      if (!_trashProfiles.contains(profile)) _trashProfiles.add(profile);
+    } else {
+      profile.trash = false;
+      profile.permaDelete = false;
+      if (_trashProfiles.contains(profile)) _trashProfiles.remove(profile);
+      if (_permaDeleteProfiles.contains(profile)) _permaDeleteProfiles.remove(profile);
+    }
+    notifyListeners();
+  }
+
+  void setPermaDelete(SenderProfile profile, bool value) {
+    if (value) {
+      profile.flagged = true;
+      profile.trash = true;
+      profile.permaDelete = true;
+      if (!_flaggedProfiles.contains(profile)) _flaggedProfiles.add(profile);
+      if (!_trashProfiles.contains(profile)) _trashProfiles.add(profile);
+      if (!_permaDeleteProfiles.contains(profile)) _permaDeleteProfiles.add(profile);
+    } else {
+      profile.permaDelete = false;
+      if (_permaDeleteProfiles.contains(profile)) _permaDeleteProfiles.remove(profile);
+    }
+    notifyListeners();
+  }
+
   List<Message> _messages = [];             // ignore: prefer_final_fields
   auth.AuthClient? _client;
   GmailApi? _gmailApi;
@@ -101,7 +149,7 @@ class Gmailhandler extends ChangeNotifier {
     _client = await _googleSignIn.authenticatedClient();
     _gmailApi = GmailApi(_client!);
     _profile = await _gmailApi!.users.getProfile('me');
-    collectEmails(false);
+    collectEmails(true);
   }
 
   Future<void> collectEmails(bool collectAll, {int messagesToCollect = 50}) async {
