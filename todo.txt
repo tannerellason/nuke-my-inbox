@@ -20,5 +20,3 @@
 
 - Action screen:
     - Implement. This is where the user chosen actions will happen
-
-- Create slideshow

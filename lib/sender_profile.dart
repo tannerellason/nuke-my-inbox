@@ -5,30 +5,37 @@ import 'package:googleapis/gmail/v1.dart';
 class SenderProfile {
 
   bool _flagged = false;
-  bool get flagged => _flagged;
-  set flagged(bool value) => _flagged = value;
-
-  String _sender = 'UNKNOWN SENDER'; // Commonly 
-  String get sender => _sender;
-
+  bool _trash = false;
+  bool _permaDelete = false;
+  String _sender = 'UNKNOWN SENDER';
   String _email = 'UNKNOWN EMAIL';
-  String get email => _email;
-
   String _name = 'UNKNOWN NAME';
-  String get name => _name;
-
   List<Message> _messages = [];
-  void addMessage(Message message) => { _messages.add(message) };
-  int get numberOfMessages => _messages.length;
-
   List<String> _unsubLinks = [];
-  void addLink(String link) => { if (link != '') _unsubLinks.add(link) };
+
+  bool get flagged => _flagged;
+  bool get trash => _trash;
+  bool get permaDelete => _permaDelete;
+  String get sender => _sender;
+  String get email => _email;
+  String get name => _name;
+  int get numberOfMessages => _messages.length;
   int get numberOfUnsubLinks => _unsubLinks.length;
 
+  set flagged(bool value) => _flagged = value;
+  set trash(bool value) => _trash = value;
+  set permaDelete(bool value) => _permaDelete = value;
+
+  void addMessage(Message message) { 
+    _messages.add(message);
+  }
+
+  void addLink(String link) { 
+    if (link != '') _unsubLinks.add(link);
+  }
 
   SenderProfile(String sender, Message message, String link) {
     _sender = sender;
-    _flagged = true;
     _name = 'NO NAME FOUND';
     _email = 'NO EMAIL FOUND';
     
