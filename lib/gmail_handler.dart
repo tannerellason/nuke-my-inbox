@@ -153,6 +153,8 @@ class Gmailhandler extends ChangeNotifier {
   }
 
   Future<void> collectEmails(bool collectAll, {int messagesToCollect = 50}) async {
+    bool errorFound = false;
+
     if (collectAll) messagesToCollect = _profile!.messagesTotal!;
 
     int messagesToCollectPerCall = messagesToCollect < 500 
@@ -165,26 +167,32 @@ class Gmailhandler extends ChangeNotifier {
     String pageToken = '';
     int count = 0;
 
-    while (true) {
-      if (_client == null) break;
+    try {
+      while (true) {
+        if (_client == null) break;
 
-      ListMessagesResponse response = pageToken == ''
-          ? await _gmailApi!.users.messages.list('me', maxResults: messagesToCollectPerCall)
-          : await _gmailApi!.users.messages.list('me', maxResults: messagesToCollectPerCall, pageToken: pageToken);
-      
-      for (Message msg in response.messages!) {
-        final Message message = await _gmailApi!.users.messages.get('me', msg.id!);
+        ListMessagesResponse response = pageToken == ''
+            ? await _gmailApi!.users.messages.list('me', maxResults: messagesToCollectPerCall)
+            : await _gmailApi!.users.messages.list('me', maxResults: messagesToCollectPerCall, pageToken: pageToken);
+        
+        for (Message msg in response.messages!) {
+          final Message message = await _gmailApi!.users.messages.get('me', msg.id!);
 
-        _messages.add(message);
-        count++;
-        processStatus(stopwatch.elapsedMilliseconds, count, messagesToCollect);
+          _messages.add(message);
+          count++;
+          processStatus(stopwatch.elapsedMilliseconds, count, messagesToCollect);
+        }
+        
+        if (response.resultSizeEstimate! < messagesToCollectPerCall) break;
+        if (count >= messagesToCollect) break;
       }
-
-      if (response.resultSizeEstimate! < messagesToCollectPerCall) break;
-      if (count >= messagesToCollect) break;
+    } on Exception catch (_, e) {
+      _statusMessage = 'An error has occurred, please try again  \n$e';
+      notifyListeners();
+      errorFound = true;
     }
 
-    processEmails();
+    if (!errorFound) processEmails();
   }
 
   Future<void> processEmails() async {

@@ -28,8 +28,10 @@ class LoadingScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                Provider.of<Gmailhandler>(context).statusMessage,
+              Flexible(
+                child: Text(
+                  Provider.of<Gmailhandler>(context).statusMessage,
+                )
               )
             ],
           ),
