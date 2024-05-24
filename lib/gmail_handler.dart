@@ -149,7 +149,7 @@ class Gmailhandler extends ChangeNotifier {
     _client = await _googleSignIn.authenticatedClient();
     _gmailApi = GmailApi(_client!);
     _profile = await _gmailApi!.users.getProfile('me');
-    collectEmails(true);
+    collectEmails(false);
   }
 
   Future<void> collectEmails(bool collectAll, {int messagesToCollect = 50}) async {
@@ -197,12 +197,12 @@ class Gmailhandler extends ChangeNotifier {
 
   Future<void> processEmails() async {
     _statusMessage = 'Processing emails';
+    notifyListeners();
 
     for (Message message in _messages) {
       String sender = getSenderFromHeaders(message.payload!.headers!);
       String unsubLink = getLinkFromPayload(message.payload!);
 
-      print(_senderProfiles.length);
       if (sender.contains(_profile!.emailAddress!)) continue;
       
       bool senderFound = false;
@@ -212,18 +212,21 @@ class Gmailhandler extends ChangeNotifier {
         profile.addMessage(message);
         profile.addLink(unsubLink);
         senderFound = true;
-        print('Added to current profile $sender');
+        _statusMessage = 'Added to current profile $sender';
+        notifyListeners();
       }
 
       if (!senderFound) {
         SenderProfile profile = SenderProfile(sender, message, unsubLink);
         _senderProfiles.add(profile);
-        print('Added new profile $sender');
+        _statusMessage = 'Added new profile $sender';
+        notifyListeners();
       }
     }
 
     _senderProfiles.sort((a, b) => b.numberOfMessages.compareTo(a.numberOfMessages));
     _statusMessage = 'Done processing';
+    notifyListeners();
   }
 
   String getSenderFromHeaders(List<MessagePartHeader> headers) {

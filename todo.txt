@@ -3,12 +3,8 @@
     - Sign out the user fully upon opening the app, authentication should not carry over
 
 - Loading screen:
-    - Change title
-    - Have progress text for processing
     - Give user the ability to control the amount of emails collected or to just collect them all
     - Fix justification of status messages
-    - Round seconds remaining to nearest multiple of 5
-    - Automatically move to flagger screen when done processing
 
 - Flagger screen:
     - Implement settings per email adress
