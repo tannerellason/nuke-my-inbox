@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-import 'gmail_handler.dart';
-import 'loading_screen.dart';
-import 'login_screen.dart';
-import 'flagger_screen.dart';
+import 'scripts/gmail_handler.dart';
+import 'screens/loading_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/flagger_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
