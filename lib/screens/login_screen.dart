@@ -13,16 +13,41 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Log in to Nuke My Inbox'),
       ),
-      body: Center(
-        child: SignInButtonBuilder(
-          text: 'Sign in with Google',
-          icon: Icons.login,
-          onPressed: () {
-            Provider.of<Gmailhandler>(context, listen: false).signInWithGoogle(context);
-          },
-          backgroundColor: ThemeData.dark(useMaterial3: true).scaffoldBackgroundColor,
-        )
-      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Switch(
+              value: Provider.of<Gmailhandler>(context, listen: false).collectAll,
+              onChanged: (value) {
+                Provider.of<Gmailhandler>(context, listen: false).collectAll = value;
+              }
+            )]
+          ),
+          TextField(
+            enabled: !Provider.of<Gmailhandler>(context, listen: false).collectAll,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Number of emails to process',
+            )
+          ),
+        ]
+      )
     );
   }
 }
+
+
+
+// Center(
+//         child: SignInButtonBuilder(
+//           text: 'Sign in with Google',
+//           icon: Icons.login,
+//           onPressed: () {
+//             Provider.of<Gmailhandler>(context, listen: false).signInWithGoogle(context);
+//           },
+//           backgroundColor: ThemeData.dark(useMaterial3: true).scaffoldBackgroundColor,
+//         )
+//       ),

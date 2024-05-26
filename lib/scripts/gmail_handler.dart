@@ -37,6 +37,10 @@ class Gmailhandler extends ChangeNotifier {
     });
   }
 
+  bool _collectAll = false;
+  bool get collectAll => _collectAll;
+  set collectAll(bool value) => _collectAll = value;
+
   String _statusMessage = 'Initializing Gmail API';
   String get statusMessage => _statusMessage;
 
