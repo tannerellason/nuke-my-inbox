@@ -150,7 +150,7 @@ class Gmailhandler extends ChangeNotifier {
     collectEmails(false);
   }
 
-  Future<void> collectEmails(bool collectAll, {int messagesToCollect = 50}) async {
+  Future<void> collectEmails(bool collectAll, {int messagesToCollect = 500}) async {
     bool errorFound = false;
 
     if (collectAll) messagesToCollect = _profile!.messagesTotal!;

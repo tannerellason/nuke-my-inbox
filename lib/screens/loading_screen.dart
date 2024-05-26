@@ -8,6 +8,56 @@ import '../scripts/gmail_handler.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
+
+  List<Widget> _buildList(BuildContext context) {
+    String statusMessage = Provider.of<Gmailhandler>(context, listen: false).statusMessage;
+    List<String> lineSplit = statusMessage.split('\n');
+    List<Widget> returnList = [];
+
+    returnList.add(const Padding(padding: EdgeInsets.only(top: 100)));
+
+    returnList.add(const Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [Text('Please wait for emails to be collected and processed')]
+    ));
+
+    for (String line in lineSplit) {
+      returnList.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(line)
+            )
+          ]
+        )
+      );
+    }
+
+    returnList.add(Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [TextButton(
+        onPressed: () {
+          Provider.of<Gmailhandler>(context, listen: false).cancel();
+        },
+        child: const Text('Cancel')
+      )]
+    ));
+
+    if (lineSplit[0] == 'Done processing') {
+      return [
+        const Padding(padding: EdgeInsets.only(top: 100)),
+        Center(
+          child: ElevatedButton(
+            onPressed: () => context.go('/flagger'),
+            child: const Text('Next page'),
+          ),
+        )
+      ];
+    }
+
+    return returnList;
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -18,45 +68,7 @@ class LoadingScreen extends StatelessWidget {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Padding(padding: EdgeInsets.only(top: 100)),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Please wait for emails to be collected and processed'),
-            ]
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Text(
-                  Provider.of<Gmailhandler>(context).statusMessage,
-                )
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Provider.of<Gmailhandler>(context, listen: false).cancel();
-                },
-                child: const Text('Sign out'),
-              )
-            ]
-          ),
-        ]
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (Provider.of<Gmailhandler>(context, listen: false).statusMessage == 'Done processing') {
-            context.go('/flagger');
-          }
-        },
-        tooltip: 'Next page',
-        child: const Icon(Icons.navigate_next),
+        children: _buildList(context)
       ),
     );
   }
