@@ -39,7 +39,17 @@ class Gmailhandler extends ChangeNotifier {
 
   bool _collectAll = false;
   bool get collectAll => _collectAll;
-  set collectAll(bool value) => _collectAll = value;
+  void setCollectAll(bool value) {
+    _collectAll = value;
+    notifyListeners();
+  }
+
+  int _numberOfMessages = 100;
+  int get numberOfMessages => _numberOfMessages;
+  void setNumberOfMessages(int value) {
+    _numberOfMessages = value;
+    notifyListeners();
+  }
 
   String _statusMessage = 'Initializing Gmail API';
   String get statusMessage => _statusMessage;
@@ -143,7 +153,7 @@ class Gmailhandler extends ChangeNotifier {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  Future<void> cancel() {
+  void cancel() {
     exit(0);
   }
 
@@ -151,10 +161,10 @@ class Gmailhandler extends ChangeNotifier {
     _client = await _googleSignIn.authenticatedClient();
     _gmailApi = GmailApi(_client!);
     _profile = await _gmailApi!.users.getProfile('me');
-    collectEmails(false);
+    collectEmails(_collectAll, _numberOfMessages);
   }
 
-  Future<void> collectEmails(bool collectAll, {int messagesToCollect = 500}) async {
+  Future<void> collectEmails(bool collectAll, int messagesToCollect) async {
     bool errorFound = false;
 
     if (collectAll) messagesToCollect = _profile!.messagesTotal!;

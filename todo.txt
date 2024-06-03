@@ -1,5 +1,0 @@
-- Loading screen:
-    - Give user the ability to control the amount of emails collected or to just collect them all
-
-- Action screen:
-    - Implement. This is where the user chosen actions will happen

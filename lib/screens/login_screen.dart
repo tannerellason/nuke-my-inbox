@@ -18,36 +18,54 @@ class LoginScreen extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Switch(
-              value: Provider.of<Gmailhandler>(context, listen: false).collectAll,
-              onChanged: (value) {
-                Provider.of<Gmailhandler>(context, listen: false).collectAll = value;
-              }
-            )]
+            children: [
+              const Text('Collect all?'),
+              const Padding(padding: EdgeInsets.only(right: 10)),
+              Switch(
+                value: Provider.of<Gmailhandler>(context, listen: false).collectAll,
+                onChanged: (value) {
+                  Provider.of<Gmailhandler>(context, listen: false).setCollectAll(value);
+                }
+              ),
+            ]
           ),
-          TextField(
-            enabled: !Provider.of<Gmailhandler>(context, listen: false).collectAll,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Number of emails to process',
-            )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: SizedBox(
+                  width: 300,
+                  child: TextField(
+                    enabled: !Provider.of<Gmailhandler>(context, listen: false).collectAll,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Number of emails to process',
+                    ),
+                    onSubmitted: (String value) {
+                      Provider.of<Gmailhandler>(context, listen: false).setNumberOfMessages(int.parse(value));
+                    },
+                  ),
+                )
+              ),
+            ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SignInButtonBuilder(
+                text: 'Sign In With Google',
+                icon: Icons.login,
+                onPressed: () {
+                  Provider.of<Gmailhandler>(context, listen: false).signInWithGoogle(context);
+                },
+                backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+              )
+            ]
+          )
         ]
       )
     );
   }
 }
-
-
-
-// Center(
-//         child: SignInButtonBuilder(
-//           text: 'Sign in with Google',
-//           icon: Icons.login,
-//           onPressed: () {
-//             Provider.of<Gmailhandler>(context, listen: false).signInWithGoogle(context);
-//           },
-//           backgroundColor: ThemeData.dark(useMaterial3: true).scaffoldBackgroundColor,
-//         )
-//       ),
