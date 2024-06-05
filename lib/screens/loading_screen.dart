@@ -16,11 +16,6 @@ class LoadingScreen extends StatelessWidget {
 
     returnList.add(const Padding(padding: EdgeInsets.only(top: 100)));
 
-    returnList.add(const Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [Text('Please wait for emails to be collected and processed')]
-    ));
-
     for (String line in lineSplit) {
       returnList.add(
         Row(
@@ -52,6 +47,19 @@ class LoadingScreen extends StatelessWidget {
             onPressed: () => context.go('/flagger'),
             child: const Text('Next page'),
           ),
+        )
+      ];
+    }
+
+    if (lineSplit[0] == 'Done') {
+      return [
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Provider.of<Gmailhandler>(context, listen: false).cancel();
+            },
+            child: const Text('Exit')
+          )
         )
       ];
     }

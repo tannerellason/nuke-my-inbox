@@ -92,7 +92,13 @@ class FlaggerScreen extends StatelessWidget {
       ),
       body: ListView(
         children: _buildList(context),
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.navigate_next),
+        onPressed: () {
+          Provider.of<Gmailhandler>(context, listen: false).initFlagHandler(context);
+        }
+      ),
     );
   }
 }

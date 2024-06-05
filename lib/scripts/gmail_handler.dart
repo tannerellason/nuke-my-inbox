@@ -117,7 +117,7 @@ class Gmailhandler extends ChangeNotifier {
     scopes: [GmailApi.mailGoogleComScope],
   );
 
-  void processStatus(int millis, int count, int total) {
+  void processStatusCollecting(int millis, int count, int total) {
     double secondsElapsed = millis / 1000;
     double messagesPerSecond = (count / secondsElapsed);
     int messagesLeft = total - count;
@@ -190,7 +190,7 @@ class Gmailhandler extends ChangeNotifier {
 
           _messages.add(message);
           count++;
-          processStatus(stopwatch.elapsedMilliseconds, count, messagesToCollect);
+          processStatusCollecting(stopwatch.elapsedMilliseconds, count, messagesToCollect);
         }
         
         if (response.resultSizeEstimate! < messagesToCollectPerCall) break;
@@ -311,5 +311,37 @@ class Gmailhandler extends ChangeNotifier {
     }
 
     return '';
+  }
+
+  List<String> _flaggedLinks = [];  // ignore: prefer_final_fields
+
+  void initFlagHandler(BuildContext context) async {
+    context.go('/loading');
+    
+    for (SenderProfile profile in _flaggedProfiles) {
+      _flaggedLinks.addAll(profile.unsubLinks);
+    }
+
+    for (SenderProfile profile in _trashProfiles) {
+      if (profile.permaDelete) continue;
+      _statusMessage = 'Trashing messages from ${profile.name}';
+      notifyListeners();
+      for (Message message in profile.messages) {
+        await _gmailApi!.users.messages.trash('me', message.id!);
+      }
+    }
+
+    for (SenderProfile profile in _permaDeleteProfiles) {
+      _statusMessage = 'Deleting messages from ${profile.name}';
+      notifyListeners();
+      for (Message message in profile.messages) {
+        await _gmailApi!.users.messages.delete('me', message.id!);
+      }
+    }
+
+    for (String link in _flaggedLinks) print(link);
+
+    _statusMessage = 'Done';
+    notifyListeners();
   }
 }

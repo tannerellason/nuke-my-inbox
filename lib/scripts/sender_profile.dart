@@ -21,6 +21,9 @@ class SenderProfile {
   String get name => _name;
   int get numberOfMessages => _messages.length;
   int get numberOfUnsubLinks => _unsubLinks.length;
+
+  List<String> get unsubLinks => _unsubLinks;
+  List<Message> get messages => _messages;
   
   set flagged(bool value) => _flagged = value;
   set trash(bool value) => _trash = value;
