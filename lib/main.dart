@@ -13,7 +13,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(ChangeNotifierProvider(
-    create: (context) => Gmailhandler(),
+    create: (context) => GmailHandler(),
     builder: ((context, child) => const MyApp()),
   ));
 }
@@ -22,19 +22,19 @@ final _router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => Consumer<Gmailhandler>(
+      builder: (context, state) => Consumer<GmailHandler>(
         builder: (context, appState, _) => LoginScreen(),
       ),
       routes: <RouteBase>[
         GoRoute(
           path: 'loading',
-          builder: (context, state) => Consumer<Gmailhandler>(
+          builder: (context, state) => Consumer<GmailHandler>(
             builder: (context, appState, _) => LoadingScreen(),
           ),
         ),
         GoRoute(
           path: 'flagger',
-          builder: (context, state) => Consumer<Gmailhandler>(
+          builder: (context, state) => Consumer<GmailHandler>(
             builder: (context, appState, _) => FlaggerScreen(),
           )
         )

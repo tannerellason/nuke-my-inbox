@@ -1,261 +1,115 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
-import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
-import 'package:googleapis/gmail/v1.dart';
+import 'dart:io' show exit;
+import 'dart:convert' show Codec, base64, utf8;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as html_dom;
-import 'dart:convert';
-import 'package:go_router/go_router.dart';
-import 'dart:io';
 
+import 'package:googleapis/gmail/v1.dart';
 import 'sender_profile.dart';
-import 'firebase_options.dart';
 
-/*
-    This class has many responsibilities:
-    - Initialize and destroy Firebase Auth objects when user logs in / out
-    - Initialize and destroy Gmail API instance when user logs in / out
-    - Collect and process all emails into SenderProfile objects
-    - Grab the unsubscribe links from messages
-*/
+class GmailHandler {
+  late final GmailApi _gmailApi;
+  late final int _messagesToCollect;
 
-class Gmailhandler extends ChangeNotifier {
-  Gmailhandler() {
-    init();
+  GmailHandler(GmailApi api, int messagesToCollect) {
+    _gmailApi = api;
+    _messagesToCollect = messagesToCollect;
   }
 
-  Future<void> init() async {
-    if (kIsWeb) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.web
-      );
-    } else if (Platform.isIOS || Platform.isMacOS)  {
-      await Firebase.initializeApp(
-        name: 'nukeMyInbox',
-        options: DefaultFirebaseOptions.ios
-      );
-    } else await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform
-    );
+  Future<List<SenderProfile>> collectEmails() async {
+    List<Message> messages = [];
 
-    FirebaseAuth.instance.userChanges().listen((user) {
-      if (user != null) initGmailApi();
-    });
-  }
+    int messagesPerCall = _messagesToCollect < 500
+        ? _messagesToCollect
+        : 500;
 
-  bool _collectAll = false;
-  bool get collectAll => _collectAll;
-  void setCollectAll(bool value) {
-    _collectAll = value;
-    notifyListeners();
-  }
-
-  int _numberOfMessages = 100;
-  int get numberOfMessages => _numberOfMessages;
-  void setNumberOfMessages(int value) {
-    _numberOfMessages = value;
-    notifyListeners();
-  }
-
-  String _statusMessage = 'Initializing Gmail API';
-  String get statusMessage => _statusMessage;
-
-  List<SenderProfile> _senderProfiles = []; // ignore: prefer_final_fields
-  List<SenderProfile> get senderProfiles {
-    return _senderProfiles;
-  }
-
-  List<SenderProfile> _flaggedProfiles      = []; //ignore: prefer_final_fields
-  List<SenderProfile> _trashProfiles        = []; //ignore: prefer_final_fields
-  List<SenderProfile> _permaDeleteProfiles  = []; //ignore: prefer_final_fields
-
-  void setFlagged(SenderProfile profile, bool value) {
-    if (value) {
-      profile.flagged = true;
-      if (!_flaggedProfiles.contains(profile)) _flaggedProfiles.add(profile);
-    } else {
-      profile.flagged = false;
-      profile.trash = false;
-      profile.permaDelete = false;
-      if (_flaggedProfiles.contains(profile)) _flaggedProfiles.remove(profile);
-      if (_trashProfiles.contains(profile)) _trashProfiles.remove(profile);
-    }
-    notifyListeners();
-  }
-
-  void setTrash(SenderProfile profile, bool value) {
-    if (value) {
-      profile.flagged = true;
-      profile.trash = true;
-      if (!_flaggedProfiles.contains(profile)) _flaggedProfiles.add(profile);
-      if (!_trashProfiles.contains(profile)) _trashProfiles.add(profile);
-    } else {
-      profile.trash = false;
-      profile.permaDelete = false;
-      if (_trashProfiles.contains(profile)) _trashProfiles.remove(profile);
-      if (_permaDeleteProfiles.contains(profile)) _permaDeleteProfiles.remove(profile);
-    }
-    notifyListeners();
-  }
-
-  void setPermaDelete(SenderProfile profile, bool value) {
-    if (value) {
-      profile.flagged = true;
-      profile.trash = true;
-      profile.permaDelete = true;
-      if (!_flaggedProfiles.contains(profile)) _flaggedProfiles.add(profile);
-      if (!_trashProfiles.contains(profile)) _trashProfiles.add(profile);
-      if (!_permaDeleteProfiles.contains(profile)) _permaDeleteProfiles.add(profile);
-    } else {
-      profile.permaDelete = false;
-      if (_permaDeleteProfiles.contains(profile)) _permaDeleteProfiles.remove(profile);
-    }
-    notifyListeners();
-  }
-
-  List<Message> _messages = [];             // ignore: prefer_final_fields
-  auth.AuthClient? _client;
-  GmailApi? _gmailApi;
-  Profile? _profile;
-
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId: DefaultFirebaseOptions.clientId,
-    scopes: [GmailApi.mailGoogleComScope],
-  );
-
-  void processStatusCollecting(int millis, int count, int total) {
-    double secondsElapsed = millis / 1000;
-    double messagesPerSecond = (count / secondsElapsed);
-    int messagesLeft = total - count;
-    int secondsLeft = messagesLeft ~/ messagesPerSecond;
-    
-    String roundedMessagesPerSecond = messagesPerSecond.toStringAsPrecision(4);
-
-    String estimatedTimeLeft = secondsLeft > 60
-        ? '${secondsLeft ~/ 60} minutes, ${secondsLeft % 60} seconds remaining'
-        : '$secondsLeft seconds remaining';
-
-    String timeElapsed = secondsElapsed > 60
-        ? '${secondsElapsed ~/ 60} minutes, ${secondsElapsed.toInt() % 60} seconds elapsed'
-        : '${secondsElapsed.toInt()} seconds elapsed';
-
-    _statusMessage = 'Collected $count of $total emails, $roundedMessagesPerSecond/s'
-        '\n$timeElapsed'
-        '\n$estimatedTimeLeft';
-    notifyListeners();
-  }
-
-  Future<UserCredential> signInWithGoogle(BuildContext context) async {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    context.go('/loading');    // ignore: use_build_context_synchronously
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  void cancel() {
-    exit(0);
-  }
-
-  Future<void> initGmailApi() async {
-    _client = await _googleSignIn.authenticatedClient();
-    _gmailApi = GmailApi(_client!);
-    _profile = await _gmailApi!.users.getProfile('me');
-    collectEmails(_collectAll, _numberOfMessages);
-  }
-
-  Future<void> collectEmails(bool collectAll, int messagesToCollect) async {
-    bool errorFound = false;
-
-    if (collectAll) messagesToCollect = _profile!.messagesTotal!;
-
-    int messagesToCollectPerCall = messagesToCollect < 500 
-        ? messagesToCollect   // Can get all messages in a single API call
-        : 500;                // CANNOT get all, as maximum is 500. Simply call max
-
-    final stopwatch = Stopwatch();
+    final Stopwatch stopwatch = Stopwatch();
     stopwatch.start();
 
-    String pageToken = '';
+    String? pageToken;
     int count = 0;
-
     try {
       while (true) {
-        ListMessagesResponse response = pageToken == ''
-            ? await _gmailApi!.users.messages.list('me', maxResults: messagesToCollectPerCall)
-            : await _gmailApi!.users.messages.list('me', maxResults: messagesToCollectPerCall, pageToken: pageToken);
+        ListMessagesResponse response = 
+          await _gmailApi.users.messages.list('me', maxResults: messagesPerCall, pageToken: pageToken);
         
         for (Message msg in response.messages!) {
-          final Message message = await _gmailApi!.users.messages.get('me', msg.id!);
-
-          _messages.add(message);
-          count++;
-          processStatusCollecting(stopwatch.elapsedMilliseconds, count, messagesToCollect);
-        }
+          final Message message = await _gmailApi.users.messages.get('me', msg.id!);
         
-        if (response.resultSizeEstimate! < messagesToCollectPerCall) break;
-        if (count >= messagesToCollect) break;
+          messages.add(message);
+          count++;
+          // status jank
+        }
+
+        if (response.resultSizeEstimate! < messagesPerCall) break;
+        if (count >= _messagesToCollect) break;
       }
     } on Exception catch (_, e) {
-      _statusMessage = 'An error has occurred, please try again  \n$e';
-      notifyListeners();
-      errorFound = true;
+      print(e.toString());
+      exit(0);
     }
 
-    if (!errorFound) processEmails();
+    return _processMessages(messages);
   }
 
-  Future<void> processEmails() async {
-    _statusMessage = 'Processing emails';
-    notifyListeners();
+  Future<List<SenderProfile>> _processMessages(List<Message> messages) async {
+    List<SenderProfile> profiles = [];
 
-    for (Message message in _messages) {
-      String sender = getSenderFromHeaders(message.payload!.headers!);
-      String unsubLink = getLinkFromPayload(message.payload!);
+    for (Message message in messages) {
+      String sender = getSenderFromMessage(message);
+      String name = getNameFromSender(sender);
+      String email = getEmailFromSender(sender);
+      String link = getLinkFromPayload(message.payload!);
 
-      if (sender.contains(_profile!.emailAddress!)) continue;
-      
       bool senderFound = false;
-      for (SenderProfile profile in _senderProfiles) {
+      for (SenderProfile profile in profiles) {
         if (profile.sender != sender) continue;
 
         profile.addMessage(message);
-        profile.addLink(unsubLink);
+        profile.addLink(link);
         senderFound = true;
-        _statusMessage = 'Added to current profile $sender';
-        notifyListeners();
+        // status jank here
       }
 
       if (!senderFound) {
-        SenderProfile profile = SenderProfile(sender, message, unsubLink);
-        _senderProfiles.add(profile);
-        _statusMessage = 'Added new profile $sender';
-        notifyListeners();
+        SenderProfile profile = SenderProfile(sender, name, email, message, link);
+        profiles.add(profile);
+        // status jank here
       }
     }
 
-    _senderProfiles.sort((a, b) => b.numberOfMessages.compareTo(a.numberOfMessages));
-    _statusMessage = 'Done processing';
-    notifyListeners();
+    profiles.sort((a, b) => b.numberOfMessages.compareTo(a.numberOfMessages));
+    return profiles;
   }
 
-  String getSenderFromHeaders(List<MessagePartHeader> headers) {
+  String getSenderFromMessage(Message message) {
+    List<MessagePartHeader> headers = message.payload!.headers!;
     for (MessagePartHeader header in headers) {
       if (header.name == 'From') return header.value!;
     }
+
     return 'NO_SENDER_FOUND';
+  }
+
+  String getNameFromSender(String sender) {
+    List<String> senderSplit = sender.split('<');
+    if (senderSplit.length <= 1 || senderSplit[0].length <= 1) return 'NO_NAME_FOUND';
+    String name = senderSplit[0].substring(0, senderSplit[0].length - 1);
+
+    if (name.startsWith('"') || name.startsWith("'")) name = name.substring(1);
+    if (name.endsWith('"') || name.endsWith("'")) name = name.substring(0, name.length - 2);
+    return name;
+  }
+
+  String getEmailFromSender(String sender) {
+    List<String> senderSplit = sender.split('<');
+    if (senderSplit.length <= 1 || senderSplit[1].length <= 1) return 'NO_EMAIL_FOUND';
+    String email = senderSplit[1].substring(0, senderSplit[1].length - 1);
+
+    if (email.startsWith('"') || email.startsWith("'")) email = email.substring(1);
+    if (email.endsWith('"') || email.endsWith("'")) email = email.substring(0, email.length - 2);
+    return email;
   }
 
   String getLinkFromPayload(MessagePart payload) {
@@ -271,7 +125,7 @@ class Gmailhandler extends ChangeNotifier {
     return '';
   }
 
-  String getLinkFromHtml(String decodedData) {
+    String getLinkFromHtml(String decodedData) {
     String link = '';
 
     html_dom.Document document = html_parser.parse(decodedData);
@@ -325,35 +179,4 @@ class Gmailhandler extends ChangeNotifier {
     return '';
   }
 
-  List<String> _flaggedLinks = [];  // ignore: prefer_final_fields
-
-  void initFlagHandler(BuildContext context) async {
-    context.go('/loading');
-    
-    for (SenderProfile profile in _flaggedProfiles) {
-      _flaggedLinks.addAll(profile.unsubLinks);
-    }
-
-    for (SenderProfile profile in _trashProfiles) {
-      if (profile.permaDelete) continue;
-      _statusMessage = 'Trashing messages from ${profile.name}';
-      notifyListeners();
-      for (Message message in profile.messages) {
-        await _gmailApi!.users.messages.trash('me', message.id!);
-      }
-    }
-
-    for (SenderProfile profile in _permaDeleteProfiles) {
-      _statusMessage = 'Deleting messages from ${profile.name}';
-      notifyListeners();
-      for (Message message in profile.messages) {
-        await _gmailApi!.users.messages.delete('me', message.id!);
-      }
-    }
-
-    for (String link in _flaggedLinks) print(link);
-
-    _statusMessage = 'Done';
-    notifyListeners();
-  }
 }

@@ -1,5 +1,9 @@
 // ignore_for_file: avoid_print, prefer_final_fields, unnecessary_getters_setters, curly_braces_in_flow_control_structures
 
+// This is how all information from the GMail API is stored.
+// Each instance of this class represents a different Email address
+// that the user has gotten an email from.
+
 import 'package:googleapis/gmail/v1.dart';
 
 class SenderProfile {
@@ -37,24 +41,12 @@ class SenderProfile {
     if (link != '') _unsubLinks.add(link);
   }
 
-  SenderProfile(String sender, Message message, String link) {
+  SenderProfile(String sender, String name, String email, Message message, String link) {
     _sender = sender;
-    _name = 'NO NAME FOUND';
-    _email = 'NO EMAIL FOUND';
+    _name = name;
+    _email = email;
     
     addMessage(message);
     addLink(link);
-
-    List<String> senderSplit = sender.split('<');
-    if (senderSplit.length <= 1) return;
-    if (senderSplit[0].length <= 1 || senderSplit[1].length <= 1) return;
-
-    _name = senderSplit[0].substring(0, senderSplit[0].length - 1);
-    if (_name[0] == '"' || _name[0] == "'") _name = _name.substring(1);
-    if (_name.endsWith("'") || _name.endsWith('"')) _name = _name.substring(0, _name.length - 2);
-
-    _email = senderSplit[1].substring(0, senderSplit[1].length - 1);
-    if (_email[0] == '"' || _email[0] == "'") _email = _email.substring(1);
-    if (_email.endsWith("'") || _email.endsWith('"')) _email = _email.substring(0, _email.length - 2);
   }
 }
