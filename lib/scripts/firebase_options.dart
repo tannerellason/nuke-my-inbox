@@ -41,13 +41,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyACm61VB2jQdVQJsRR7ozVHdMSNBA5ya5s',
-    appId: '1:1031401823307:web:37788bcea675a7b07581ce',
+    apiKey: 'AIzaSyBs7Rpq6-wPzBD1xun40cgbBVMD6RR_u3s',
+    appId: '1:1031401823307:web:dbc9d48d51a60e797581ce',
     messagingSenderId: '1031401823307',
     projectId: 'nuke-my-inbox',
     authDomain: 'nuke-my-inbox.firebaseapp.com',
     storageBucket: 'nuke-my-inbox.appspot.com',
-    measurementId: 'G-EB27HX70CB',
+    measurementId: 'G-CPKDK98L75',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -81,12 +81,12 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyACm61VB2jQdVQJsRR7ozVHdMSNBA5ya5s',
-    appId: '1:1031401823307:web:ed720387d88038237581ce',
+    apiKey: 'AIzaSyBs7Rpq6-wPzBD1xun40cgbBVMD6RR_u3s',
+    appId: '1:1031401823307:web:4b7592acab273d667581ce',
     messagingSenderId: '1031401823307',
     projectId: 'nuke-my-inbox',
     authDomain: 'nuke-my-inbox.firebaseapp.com',
     storageBucket: 'nuke-my-inbox.appspot.com',
-    measurementId: 'G-TX17TFMPBG',
+    measurementId: 'G-KRSZQJ5KDV',
   );
 }
