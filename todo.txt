@@ -1,4 +1,5 @@
 - Revamp login and loading screens
 - Fix web app signin() function
 - Implement action screen
-- Gmailhandler needs to be expanded into multiple files. Too much responsibility
+- Add new ChangeNotifierProvider
+- Figure out status message stuff

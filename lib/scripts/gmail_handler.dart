@@ -125,7 +125,7 @@ class GmailHandler {
     return '';
   }
 
-    String getLinkFromHtml(String decodedData) {
+  String getLinkFromHtml(String decodedData) {
     String link = '';
 
     html_dom.Document document = html_parser.parse(decodedData);
