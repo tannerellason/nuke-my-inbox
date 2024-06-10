@@ -112,8 +112,17 @@ class Gmailhandler extends ChangeNotifier {
   GmailApi? _gmailApi;
   Profile? _profile;
 
-  final _googleSignIn = GoogleSignIn(
-    clientId: '1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com',
+  // String getClientId() {
+  //   if (Platform.isAndroid) return '1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com'; 
+  //   else if (Platform.isIOS) return ; 
+  //   else return '';
+  // }
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    // clientId: Platform.isAndroid 
+    //     ? '1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com'
+    //     : '1031401823307-cpi4g7pm06vap2qr09gc1p0mj8a0s6qt.apps.googleusercontent.com',
+    clientId: '1031401823307-cpi4g7pm06vap2qr09gc1p0mj8a0s6qt.apps.googleusercontent.com',
     scopes: [GmailApi.mailGoogleComScope],
   );
 
