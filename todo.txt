@@ -1,7 +1,4 @@
-CURRENT MAJOR GOAL:
-    Get the app WORKING on ALL platforms.
-
-Current issue:
-
-The google_sign_in plugin `signIn` method is deprecated on the web, and will be removed in Q2 2024. Please use `renderButton` instead. See:
-https://pub.dev/packages/google_sign_in_web#migrating-to-v011-and-v012-google-identity-services
+- Revamp login and loading screens
+- Fix web app signin() function
+- Implement action screen
+- Gmailhandler needs to be expanded into multiple files. Too much responsibility
