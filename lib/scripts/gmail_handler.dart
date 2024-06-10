@@ -30,7 +30,10 @@ class Gmailhandler extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+      name: 'nuke-my-inbox',
+      options: DefaultFirebaseOptions.currentPlatform
+    );
 
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) initGmailApi();
