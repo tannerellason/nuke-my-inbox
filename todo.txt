@@ -3,10 +3,8 @@ CURRENT MAJOR GOAL:
 
 Current issue:
 
-on IOS: "Your app is missing support for the following URL schemes: android.clientId
-
 on Mac: The plugin 'google_sign_in_ios' requires a higher minimum macOS deployment version than your application is targeting
 
-on Chrome: Access Blocked: Authorization error (Error 400: Invalid request, flowName: generalOAuthFlow)
-
 on iPad: Mac Designed For iPad is not currently supported for Flutter run -d. (Run thru XCode?)
+
+on Windows: Don't even have the option? Do research.

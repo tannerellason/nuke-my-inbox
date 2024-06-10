@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
@@ -30,10 +31,14 @@ class Gmailhandler extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    if (Platform.isIOS)  {
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.web
+      );
+    } else if (Platform.isIOS)  {
       await Firebase.initializeApp(
         name: 'nukeMyInbox',
-        options: DefaultFirebaseOptions.currentPlatform
+        options: DefaultFirebaseOptions.ios
       );
     } else await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
