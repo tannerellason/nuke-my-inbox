@@ -40,6 +40,30 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static String get clientId {
+    if (kIsWeb) {
+      return '1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com';
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return '1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com';
+      case TargetPlatform.iOS:
+        return '1031401823307-cpi4g7pm06vap2qr09gc1p0mj8a0s6qt.apps.googleusercontent.com';
+      case TargetPlatform.macOS:
+        return '';
+      case TargetPlatform.windows:
+        return '';
+      case TargetPlatform.linux:
+        throw UnsupportedError(
+          'Linux is not supported by firebase, and thus this app entirely'
+        );
+      default:
+        throw UnsupportedError(
+          'The platform you are trying to use this on is not supported.'
+        );
+    }
+  }
+
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyBs7Rpq6-wPzBD1xun40cgbBVMD6RR_u3s',
     appId: '1:1031401823307:web:dbc9d48d51a60e797581ce',
