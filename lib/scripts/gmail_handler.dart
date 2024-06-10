@@ -35,7 +35,7 @@ class Gmailhandler extends ChangeNotifier {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.web
       );
-    } else if (Platform.isIOS)  {
+    } else if (Platform.isIOS || Platform.isMacOS)  {
       await Firebase.initializeApp(
         name: 'nukeMyInbox',
         options: DefaultFirebaseOptions.ios

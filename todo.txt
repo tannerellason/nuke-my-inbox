@@ -3,7 +3,7 @@ CURRENT MAJOR GOAL:
 
 Current issue:
 
-on Mac: The plugin 'google_sign_in_ios' requires a higher minimum macOS deployment version than your application is targeting
+on Mac: 'Unhandled Exception: 'package:firebase_auth_platform_interface/src/providers/google_auth.dart': Failed assertion: line 43 pos 12: 'accessToken != null || idToken != null':'
 
 on iPad: Mac Designed For iPad is not currently supported for Flutter run -d. (Run thru XCode?)
 

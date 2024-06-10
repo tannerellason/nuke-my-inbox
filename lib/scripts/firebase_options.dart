@@ -50,9 +50,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return '1031401823307-cpi4g7pm06vap2qr09gc1p0mj8a0s6qt.apps.googleusercontent.com';
       case TargetPlatform.macOS:
-        return '';
+        return 'com.googleusercontent.apps.1031401823307-nnuald2l89jpehervv54b96pcgre19uj';
       case TargetPlatform.windows:
-        return '';
+        return 'Windows is currently not supported. Support coming soon.';
       case TargetPlatform.linux:
         throw UnsupportedError(
           'Linux is not supported by firebase, and thus this app entirely'
