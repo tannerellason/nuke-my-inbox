@@ -3,8 +3,5 @@ CURRENT MAJOR GOAL:
 
 Current issue:
 
-on Mac: 'Unhandled Exception: 'package:firebase_auth_platform_interface/src/providers/google_auth.dart': Failed assertion: line 43 pos 12: 'accessToken != null || idToken != null':'
-
-on iPad: Mac Designed For iPad is not currently supported for Flutter run -d. (Run thru XCode?)
-
-on Windows: Don't even have the option? Do research.
+The google_sign_in plugin `signIn` method is deprecated on the web, and will be removed in Q2 2024. Please use `renderButton` instead. See:
+https://pub.dev/packages/google_sign_in_web#migrating-to-v011-and-v012-google-identity-services
