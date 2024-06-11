@@ -14,19 +14,29 @@ class StateProvider extends ChangeNotifier {
   String _status = 'Please wait for emails to be collected and processed';
   String get status => _status;
 
+  bool _collectAll = true;
+  bool get collectAll => _collectAll;
+  void setCollectAll(bool value) {
+    _collectAll = value;
+    notifyListeners();
+  }
+
+  int _numberOfMessages = 100;
+  int get numberOfMessages => _numberOfMessages;
+  void setNumberOfMessages(int value) {
+    _numberOfMessages = value;
+    notifyListeners();
+  }
+
   void signInWithGoogle() async {
     var api = await AuthHandler.initGmailApi();
-    GmailHandler gmail = GmailHandler(api, 100);
+    GmailHandler gmail = GmailHandler(api, _numberOfMessages, _collectAll);
     _senderProfiles = await gmail.collectEmails();
     _status = 'Done processing';
     notifyListeners();
   }
 
   // TEMP VARS
-  void cancel() {}
-  bool collectAll = true;
-  void setCollectAll(bool value) {}
-  void setNumberOfMessages(int value) {}
   void setFlagged(SenderProfile profile, bool value) {}
   void setTrash(SenderProfile profile, bool value) {}
   void setPermaDelete(SenderProfile profile, bool value) {}

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:io' show exit;
 
 import 'package:nuke_my_inbox/scripts/state_provider.dart';
 
@@ -33,7 +34,7 @@ class LoadingScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [TextButton(
         onPressed: () {
-          Provider.of<StateProvider>(context, listen: false).cancel();
+          
         },
         child: const Text('Cancel')
       )]
@@ -56,7 +57,7 @@ class LoadingScreen extends StatelessWidget {
         Center(
           child: ElevatedButton(
             onPressed: () {
-              Provider.of<StateProvider>(context, listen: false).cancel();
+              exit(0);
             },
             child: const Text('Exit')
           )

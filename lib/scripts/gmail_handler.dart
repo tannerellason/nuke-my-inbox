@@ -1,8 +1,8 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'dart:io' show exit;
-import 'dart:developer' show log;
 import 'dart:convert' show Codec, base64, utf8;
+import 'package:flutter/material.dart' show debugPrint;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as html_dom;
 import 'package:googleapis/gmail/v1.dart';
@@ -12,10 +12,12 @@ import 'sender_profile.dart';
 class GmailHandler {
   late final GmailApi _gmailApi;
   late final int _messagesToCollect;
+  late final bool _collectAll;
 
-  GmailHandler(GmailApi api, int messagesToCollect) {
+  GmailHandler(GmailApi api, int messagesToCollect, bool collectAll) {
     _gmailApi = api;
     _messagesToCollect = messagesToCollect;
+    _collectAll = collectAll;
     init();
   }
 
@@ -44,7 +46,7 @@ class GmailHandler {
           final Message message = await _gmailApi.users.messages.get('me', msg.id!);
           messages.add(message);
           count++;
-          log('Collected email #$count of $_messagesToCollect');
+          debugPrint('Collected email #$count of $_messagesToCollect');
         }
 
         if (response.resultSizeEstimate! < messagesPerCall) break;
