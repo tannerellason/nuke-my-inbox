@@ -10,7 +10,7 @@ class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
 
   List<Widget> _buildList(BuildContext context) {
-    String statusMessage = Provider.of<StateProvider>(context, listen: false).statusMessage;
+    String statusMessage = Provider.of<StateProvider>(context, listen: false).status;
     List<String> lineSplit = statusMessage.split('\n');
     List<Widget> returnList = [];
 
