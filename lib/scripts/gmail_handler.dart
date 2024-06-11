@@ -11,22 +11,26 @@ import 'sender_profile.dart';
 
 class GmailHandler {
   late final GmailApi _gmailApi;
-  late final int _messagesToCollect;
+  late int _messagesToCollect;
   late final bool _collectAll;
+  bool collectionStarted = false;
 
   GmailHandler(GmailApi api, int messagesToCollect, bool collectAll) {
     _gmailApi = api;
     _messagesToCollect = messagesToCollect;
     _collectAll = collectAll;
-    init();
-  }
-
-  void init() {
-    collectEmails();
   }
 
   Future<List<SenderProfile>> collectEmails() async {
+    if (collectionStarted) return [];
+    collectionStarted = true;
+
     List<Message> messages = [];
+    
+    if (_collectAll) {
+      Profile profile = await _gmailApi.users.getProfile('me');
+      _messagesToCollect = profile.messagesTotal!;
+    }
 
     int messagesPerCall = _messagesToCollect < 500
         ? _messagesToCollect

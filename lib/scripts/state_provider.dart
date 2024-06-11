@@ -36,9 +36,37 @@ class StateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // TEMP VARS
-  void setFlagged(SenderProfile profile, bool value) {}
-  void setTrash(SenderProfile profile, bool value) {}
-  void setPermaDelete(SenderProfile profile, bool value) {}
+  void setFlagged(SenderProfile profile, bool value) {
+    if (value) {
+      profile.flagged = true;
+    } else {
+      profile.flagged = false;
+      profile.trash = false;
+      profile.permaDelete = false;
+    }
+    notifyListeners();
+  }
+
+  void setTrash(SenderProfile profile, bool value) {
+    if (value) {
+      profile.flagged = true;
+      profile.trash = true;
+    } else {
+      profile.trash = false;
+      profile.permaDelete = false;
+    }
+    notifyListeners();
+  }
+
+  void setPermaDelete(SenderProfile profile, bool value) {
+    if (value) {
+      profile.flagged = true;
+      profile.trash = true;
+      profile.permaDelete = true;
+    } else {
+      profile.permaDelete = false;
+    }
+    notifyListeners();
+  }
   void initFlagHandler(BuildContext context) {}
 }
