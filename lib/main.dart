@@ -8,6 +8,7 @@ import 'screens/loading_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/flagger_screen.dart';
 import 'scripts/state_provider.dart';
+import 'scripts/gmail_handler.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
