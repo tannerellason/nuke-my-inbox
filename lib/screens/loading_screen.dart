@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-import '../scripts/gmail_handler.dart';
+import 'package:nuke_my_inbox/scripts/state_provider.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
 
   List<Widget> _buildList(BuildContext context) {
-    String statusMessage = Provider.of<Gmailhandler>(context, listen: false).statusMessage;
+    String statusMessage = Provider.of<StateProvider>(context, listen: false).statusMessage;
     List<String> lineSplit = statusMessage.split('\n');
     List<Widget> returnList = [];
 
@@ -33,7 +33,7 @@ class LoadingScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [TextButton(
         onPressed: () {
-          Provider.of<Gmailhandler>(context, listen: false).cancel();
+          Provider.of<StateProvider>(context, listen: false).cancel();
         },
         child: const Text('Cancel')
       )]
@@ -56,7 +56,7 @@ class LoadingScreen extends StatelessWidget {
         Center(
           child: ElevatedButton(
             onPressed: () {
-              Provider.of<Gmailhandler>(context, listen: false).cancel();
+              Provider.of<StateProvider>(context, listen: false).cancel();
             },
             child: const Text('Exit')
           )

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:nuke_my_inbox/scripts/gmail_handler.dart';
 import 'package:provider/provider.dart';
-import '../scripts/sender_profile.dart';
+import 'package:nuke_my_inbox/scripts/state_provider.dart';
+import 'package:nuke_my_inbox/scripts/sender_profile.dart';
 
 class FlaggerScreen extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
   const FlaggerScreen();
 
   List<Widget> _buildList(BuildContext context) {
-    List<SenderProfile>? senderProfiles = Provider.of<Gmailhandler>(context).senderProfiles;
+    List<SenderProfile>? senderProfiles = Provider.of<StateProvider>(context).senderProfiles;
     List<Widget> widgetList = [];
     widgetList.add(const Padding(padding: EdgeInsets.only(top: 30)));
     
@@ -41,7 +41,7 @@ class FlaggerScreen extends StatelessWidget {
             Switch(
               value: senderProfile.flagged,
               onChanged: (value) {
-                Provider.of<Gmailhandler>(context, listen: false).setFlagged(senderProfile, value);
+                Provider.of<StateProvider>(context, listen: false).setFlagged(senderProfile, value);
               },
             )
           ]
@@ -53,7 +53,7 @@ class FlaggerScreen extends StatelessWidget {
             Switch(
               value: senderProfile.trash,
               onChanged: (value) {
-                Provider.of<Gmailhandler>(context, listen: false).setTrash(senderProfile, value);
+                Provider.of<StateProvider>(context, listen: false).setTrash(senderProfile, value);
               },
             )
           ]
@@ -65,7 +65,7 @@ class FlaggerScreen extends StatelessWidget {
             Switch(
               value: senderProfile.permaDelete,
               onChanged: (value) {
-                Provider.of<Gmailhandler>(context, listen: false).setPermaDelete(senderProfile, value);
+                Provider.of<StateProvider>(context, listen: false).setPermaDelete(senderProfile, value);
               },
             )
           ]
@@ -96,7 +96,7 @@ class FlaggerScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.navigate_next),
         onPressed: () {
-          Provider.of<Gmailhandler>(context, listen: false).initFlagHandler(context);
+          Provider.of<StateProvider>(context, listen: false).initFlagHandler(context);
         }
       ),
     );

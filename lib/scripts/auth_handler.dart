@@ -15,12 +15,12 @@ import 'package:googleapis_auth/googleapis_auth.dart';
 
 import 'firebase_options.dart';
 
-class Auth {
-  Auth() {
+class AuthHandler {
+  AuthHandler() {
     init();
   }
 
-  Future<void> init() async {
+  static Future<void> init() async {
     String? name;
     if (kIsWeb) {}
     else if (Platform.isIOS) name = 'NukeMyInbox';
@@ -29,14 +29,16 @@ class Auth {
       name: name,
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    print('hit init');
   }
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(
     clientId: DefaultFirebaseOptions.clientId,
     scopes: [GmailApi.mailGoogleComScope],
   );
 
-  Future<UserCredential> signInWithGoogle() async {
+  static Future<UserCredential> signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
     final GoogleSignInAuthentication? googleAuth 
@@ -50,7 +52,8 @@ class Auth {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  Future<GmailApi> initGmailApi() async {
+  static Future<GmailApi> initGmailApi() async {
+    await signInWithGoogle();
     final AuthClient? client = await _googleSignIn.authenticatedClient();
     final GmailApi _gmailApi = GmailApi(client!);
     return _gmailApi;

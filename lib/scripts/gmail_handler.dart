@@ -15,9 +15,15 @@ class GmailHandler {
   GmailHandler(GmailApi api, int messagesToCollect) {
     _gmailApi = api;
     _messagesToCollect = messagesToCollect;
+    init();
+  }
+
+  void init() {
+    collectEmails();
   }
 
   Future<List<SenderProfile>> collectEmails() async {
+    print('collecting');
     List<Message> messages = [];
 
     int messagesPerCall = _messagesToCollect < 500
@@ -31,6 +37,7 @@ class GmailHandler {
     int count = 0;
     try {
       while (true) {
+        print('while');
         ListMessagesResponse response = 
           await _gmailApi.users.messages.list('me', maxResults: messagesPerCall, pageToken: pageToken);
         
@@ -40,6 +47,7 @@ class GmailHandler {
           messages.add(message);
           count++;
           // status jank
+          print(count);
         }
 
         if (response.resultSizeEstimate! < messagesPerCall) break;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
-import '../scripts/gmail_handler.dart';
+import 'package:nuke_my_inbox/scripts/state_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
@@ -22,9 +23,9 @@ class LoginScreen extends StatelessWidget {
               const Text('Collect all?'),
               const Padding(padding: EdgeInsets.only(right: 10)),
               Switch(
-                value: Provider.of<Gmailhandler>(context, listen: false).collectAll,
+                value: Provider.of<StateProvider>(context, listen: false).collectAll,
                 onChanged: (value) {
-                  Provider.of<Gmailhandler>(context, listen: false).setCollectAll(value);
+                  Provider.of<StateProvider>(context, listen: false).setCollectAll(value);
                 }
               ),
             ]
@@ -37,14 +38,14 @@ class LoginScreen extends StatelessWidget {
                 child: SizedBox(
                   width: 300,
                   child: TextField(
-                    enabled: !Provider.of<Gmailhandler>(context, listen: false).collectAll,
+                    enabled: !Provider.of<StateProvider>(context, listen: false).collectAll,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Number of emails to process',
                     ),
                     onSubmitted: (String value) {
-                      Provider.of<Gmailhandler>(context, listen: false).setNumberOfMessages(int.parse(value));
+                      Provider.of<StateProvider>(context, listen: false).setNumberOfMessages(int.parse(value));
                     },
                   ),
                 )
@@ -58,7 +59,8 @@ class LoginScreen extends StatelessWidget {
                 text: 'Sign In With Google',
                 icon: Icons.login,
                 onPressed: () {
-                  Provider.of<Gmailhandler>(context, listen: false).signInWithGoogle(context);
+                  Provider.of<StateProvider>(context, listen: false).signInWithGoogle();
+                  context.go('/loading');
                 },
                 backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
               )
