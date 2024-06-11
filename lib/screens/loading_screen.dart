@@ -1,7 +1,6 @@
 //ignore_for_file: avoid_print 
 
 import 'package:flutter/material.dart';
-import 'package:nuke_my_inbox/scripts/gmail_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,7 +10,7 @@ class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
 
   List<Widget> _buildList(BuildContext context) {
-    String statusMessage = Provider.of<GmailHandler>(context, listen: false).status;
+    String statusMessage = Provider.of<StateProvider>(context, listen: false).status;
     List<String> lineSplit = statusMessage.split('\n');
     List<Widget> returnList = [];
 

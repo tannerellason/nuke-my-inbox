@@ -9,17 +9,9 @@ import 'package:googleapis/gmail/v1.dart';
 
 import 'sender_profile.dart';
 
-class GmailHandler extends ChangeNotifier {
+class GmailHandler {
   late final GmailApi _gmailApi;
   late final int _messagesToCollect;
-
-  String _status = 'First status';
-  String get status => _status;
-
-  void updateStatus(String status) {
-    _status = status;
-    notifyListeners();
-  }
 
   GmailHandler(GmailApi api, int messagesToCollect) {
     _gmailApi = api;
@@ -28,7 +20,6 @@ class GmailHandler extends ChangeNotifier {
   }
 
   void init() {
-    updateStatus('collecting');
     collectEmails();
   }
 
@@ -53,6 +44,7 @@ class GmailHandler extends ChangeNotifier {
           final Message message = await _gmailApi.users.messages.get('me', msg.id!);
           messages.add(message);
           count++;
+          print('Collected email #$count of $_messagesToCollect');
         }
 
         if (response.resultSizeEstimate! < messagesPerCall) break;

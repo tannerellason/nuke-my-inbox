@@ -11,10 +11,15 @@ class StateProvider extends ChangeNotifier {
   List<SenderProfile> _senderProfiles = [];
   List<SenderProfile> get senderProfiles => _senderProfiles;
 
+  String _status = 'Please wait for emails to be collected and processed';
+  String get status => _status;
+
   void signInWithGoogle() async {
     var api = await AuthHandler.initGmailApi();
     GmailHandler gmail = GmailHandler(api, 100);
     _senderProfiles = await gmail.collectEmails();
+    _status = 'Done processing';
+    notifyListeners();
   }
 
   // TEMP VARS
