@@ -7,6 +7,7 @@ import 'package:html/dom.dart' as html_dom;
 
 import 'package:googleapis/gmail/v1.dart';
 import 'sender_profile.dart';
+import 'auth_handler.dart';
 
 class GmailHandler {
   late final GmailApi _gmailApi;
@@ -23,7 +24,6 @@ class GmailHandler {
   }
 
   Future<List<SenderProfile>> collectEmails() async {
-    print('collecting');
     List<Message> messages = [];
 
     int messagesPerCall = _messagesToCollect < 500
@@ -37,24 +37,19 @@ class GmailHandler {
     int count = 0;
     try {
       while (true) {
-        print('while');
         ListMessagesResponse response = 
           await _gmailApi.users.messages.list('me', maxResults: messagesPerCall, pageToken: pageToken);
         
         for (Message msg in response.messages!) {
           final Message message = await _gmailApi.users.messages.get('me', msg.id!);
-        
           messages.add(message);
           count++;
-          // status jank
-          print(count);
         }
 
         if (response.resultSizeEstimate! < messagesPerCall) break;
         if (count >= _messagesToCollect) break;
       }
     } on Exception catch (_, e) {
-      print(e.toString());
       exit(0);
     }
 

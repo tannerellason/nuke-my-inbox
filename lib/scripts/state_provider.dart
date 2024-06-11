@@ -11,25 +11,25 @@ class StateProvider extends ChangeNotifier {
   }
 
   void init() {
-    AuthHandler();
+
   }
 
   List<SenderProfile> _senderProfiles = [];
   List<SenderProfile> get senderProfiles => _senderProfiles;
 
+  String _statusMessage = '';
+  String get statusMessage => _statusMessage;
+
   void signInWithGoogle() async {
     var api = await AuthHandler.initGmailApi();
     GmailHandler gmail = GmailHandler(api, 100);
-    _senderProfiles = await gmail.collectEmails();
+    _senderProfiles = await gmail.collectEmails();    
   }
 
 
 
 
-
-
   // TEMP VARS
-  String statusMessage = '';
   void cancel() {}
   bool collectAll = true;
   void setCollectAll(bool value) {}

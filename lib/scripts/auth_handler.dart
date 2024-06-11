@@ -5,6 +5,7 @@
 
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 
 import 'package:google_sign_in/google_sign_in.dart';
@@ -12,15 +13,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:googleapis_auth/googleapis_auth.dart';
+import 'package:nuke_my_inbox/scripts/gmail_handler.dart';
+
 
 import 'firebase_options.dart';
 
 class AuthHandler {
-  AuthHandler() {
-    init();
-  }
 
-  static Future<void> init() async {
+  static Future<GmailApi> initGmailApi() async {
     String? name;
     if (kIsWeb) {}
     else if (Platform.isIOS) name = 'NukeMyInbox';
@@ -29,8 +29,11 @@ class AuthHandler {
       name: name,
       options: DefaultFirebaseOptions.currentPlatform,
     );
-
-    print('hit init');
+    
+    await signInWithGoogle();
+    final AuthClient? client = await _googleSignIn.authenticatedClient();
+    final GmailApi gmailApi = GmailApi(client!);
+    return gmailApi;
   }
 
   static final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -49,13 +52,8 @@ class AuthHandler {
       idToken: googleAuth?.idToken,
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
+    print('Token: ${googleAuth?.idToken}');
 
-  static Future<GmailApi> initGmailApi() async {
-    await signInWithGoogle();
-    final AuthClient? client = await _googleSignIn.authenticatedClient();
-    final GmailApi _gmailApi = GmailApi(client!);
-    return _gmailApi;
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }
