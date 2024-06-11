@@ -1,5 +1,5 @@
-- Revamp login and loading screens
+- Revamp login screen(s)
 - Fix web app signin() function
 - Implement action screen
 - Add new ChangeNotifierProvider
-- Figure out status message stuff
+- Status message stuff
