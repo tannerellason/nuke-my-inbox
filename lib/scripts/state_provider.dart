@@ -16,9 +16,19 @@ import 'package:googleapis/gmail/v1.dart';
 
 
 class StateProvider extends ChangeNotifier {
-  List<Widget> _statusWidgets = [const Center( child: Text('Initializing'))]; // ignore: prefer_final_fields
-  List<Widget> get statusWidgets => _statusWidgets;
-  void setStatusWidgets(List<Widget> value) {
+  List<Column> _statusWidgets = [
+    const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Text('Initializing')]
+        )
+      ]
+    )
+  ]; // ignore: prefer_final_fields
+  List<Column> get statusWidgets => _statusWidgets;
+  void setStatusWidgets(List<Column> value) {
     _statusWidgets = value;
     notifyListeners();
   }
@@ -75,18 +85,18 @@ class StateProvider extends ChangeNotifier {
   }
 
   void initFlagHandler(BuildContext context) {
-    debugPrint('handling actions');
+    context.go('/loading');
+    addToStatus('Performing chosen actions...');
+
     for (SenderProfile profile in _senderProfiles) {
       if (profile.flagged) {
-        debugPrint('handling ${profile.name}');
+        addToStatus('Performing actions for ${profile.name}');
         _flaggedLinks.addAll(profile.unsubLinks);
       }
 
       if (profile.permaDelete)  permaDeleteMessages(profile.messages);
       else if (profile.trash)   trashMessages(profile.messages);
     }
-
-    exit(0);
   }
 
 
@@ -313,7 +323,7 @@ class StateProvider extends ChangeNotifier {
 
     BatchDeleteMessagesRequest request = BatchDeleteMessagesRequest(ids: idsToDelete);
     _gmailApi.users.messages.batchDelete(request, 'me');
-    debugPrint('permanently deleted ${idsToDelete.length} messages');
+    addToStatus('Permanently deleted ${idsToDelete.length} messages');
   }
 
   void trashMessages(List<Message> messages) {
@@ -329,22 +339,21 @@ class StateProvider extends ChangeNotifier {
         trashCallsPerSecond = 0;
         flag = false;
       }
-      debugPrint('trashing msg #${index + 1} of ${messages.length}');
 
       _gmailApi.users.messages.trash('me', messages[index].id!);
-      debugPrint('deleted msg ${index + 1}');
+      addToStatus('Deleted msg ${index + 1} of ${messages.length} (RATE LIMITED BY GMAIL)');
       trashCallsPerSecond++;
       index++;
     }
   }
 
   void collectionStatusBuilder(int numberCollected, int totalMessages, int millisElapsed) {
-    int secondsElapsed = millisElapsed ~/ 1000;
+    double secondsElapsed = millisElapsed / 1000;
     double collectionsPerSecond = numberCollected / secondsElapsed;
     String collectionsPerSecondString = collectionsPerSecond.toStringAsPrecision(4);
 
     String timeElapsed = secondsElapsed > 60
-        ? '${secondsElapsed ~/ 60} minutes, ${secondsElapsed % 60} seconds elapsed'
+        ? '${secondsElapsed ~/ 60} minutes, ${(secondsElapsed % 60).toStringAsPrecision(4)} seconds elapsed'
         : '$secondsElapsed seconds elapsed';
     
     int messagesRemaining = totalMessages - numberCollected;
@@ -353,7 +362,7 @@ class StateProvider extends ChangeNotifier {
         ? '${estimatedSecondsRemaining ~/ 60} minutes, ${estimatedSecondsRemaining % 60} seconds remaining'
         : '$estimatedSecondsRemaining seconds remaining';
 
-    List<Widget> widgetList = [
+    List<Column> widgetList = [
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -377,12 +386,31 @@ class StateProvider extends ChangeNotifier {
   }
 
   void stringStatusBuilder(String statusMessage) {
-    List<Widget> widgetList = [
-      Center(
-        child: Text(statusMessage)
+    List<Column> widgetList = [
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(statusMessage)]
+          )
+        ]
       )
     ];
 
     setStatusWidgets(widgetList);
+  }
+
+  void addToStatus(String message) {
+    final Column column = _statusWidgets[0];
+    List<Widget> children = column.children;
+    
+    Widget widgetToInsert = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [Text(message)]
+    );
+
+    children.insert(0, widgetToInsert);
+    notifyListeners();
   }
 }
