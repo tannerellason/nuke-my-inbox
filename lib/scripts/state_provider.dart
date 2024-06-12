@@ -86,10 +86,13 @@ class StateProvider extends ChangeNotifier {
 
   void initFlagHandler(BuildContext context) {
     context.go('/loading');
+    stopwatch.start();
+    print('Performing chosen actions');
     addToStatus('Performing chosen actions...');
 
     for (SenderProfile profile in _senderProfiles) {
       if (profile.flagged) {
+        print(profile.name);
         addToStatus('Performing actions for ${profile.name}');
         _flaggedLinks.addAll(profile.unsubLinks);
       }
@@ -132,8 +135,8 @@ class StateProvider extends ChangeNotifier {
         ? _messagesToCollect
         : 500;
 
-    final Stopwatch stopwatch = Stopwatch();
-    stopwatch.start();
+    final Stopwatch collectionStopwatch = Stopwatch();
+    collectionStopwatch.start();
 
     String? pageToken;
     int count = 0;
@@ -148,7 +151,7 @@ class StateProvider extends ChangeNotifier {
           count++;
           debugPrint('Collected email #$count of $_messagesToCollect');
           if (count > _messagesToCollect) break;
-          collectionStatusBuilder(count, _messagesToCollect, stopwatch.elapsedMilliseconds);
+          collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds);
         }
 
         if (response.resultSizeEstimate! < messagesPerCall) break;
@@ -323,6 +326,7 @@ class StateProvider extends ChangeNotifier {
 
     BatchDeleteMessagesRequest request = BatchDeleteMessagesRequest(ids: idsToDelete);
     _gmailApi.users.messages.batchDelete(request, 'me');
+    print('deleted ${idsToDelete.length}');
     addToStatus('Permanently deleted ${idsToDelete.length} messages');
   }
 
@@ -331,6 +335,8 @@ class StateProvider extends ChangeNotifier {
     int index = 0;
     bool flag = false;
     while (index < messages.length) {
+      print(stopwatch.elapsedMilliseconds);
+      print(trashCallsPerSecond);
       if (stopwatch.elapsedMilliseconds ~/ 1000 == currentSecond && trashCallsPerSecond >= 20) {
         flag = true;
         continue;
@@ -341,6 +347,7 @@ class StateProvider extends ChangeNotifier {
       }
 
       _gmailApi.users.messages.trash('me', messages[index].id!);
+      print('${index + 1} of ${messages.length}');
       addToStatus('Deleted msg ${index + 1} of ${messages.length} (RATE LIMITED BY GMAIL)');
       trashCallsPerSecond++;
       index++;
@@ -353,8 +360,8 @@ class StateProvider extends ChangeNotifier {
     String collectionsPerSecondString = collectionsPerSecond.toStringAsPrecision(4);
 
     String timeElapsed = secondsElapsed > 60
-        ? '${secondsElapsed ~/ 60} minutes, ${(secondsElapsed % 60).toStringAsPrecision(4)} seconds elapsed'
-        : '$secondsElapsed seconds elapsed';
+        ? '${secondsElapsed ~/ 60} minutes, ${(secondsElapsed % 60).toInt()} seconds elapsed'
+        : '${secondsElapsed.toInt()} seconds elapsed';
     
     int messagesRemaining = totalMessages - numberCollected;
     int estimatedSecondsRemaining = messagesRemaining ~/ collectionsPerSecond;
