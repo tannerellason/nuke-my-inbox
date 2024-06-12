@@ -11,14 +11,18 @@ import 'sender_profile.dart';
 
 class GmailHandler {
   late final GmailApi _gmailApi;
-  late int _messagesToCollect;
   late final bool _collectAll;
+  late int _messagesToCollect;
   bool collectionStarted = false;
+
+  Stopwatch stopwatch = Stopwatch();
+  int trashCallsPerSecond = 0;
 
   GmailHandler(GmailApi api, int messagesToCollect, bool collectAll) {
     _gmailApi = api;
     _messagesToCollect = messagesToCollect;
     _collectAll = collectAll;
+    stopwatch.start();
   }
 
   Future<List<SenderProfile>> collectEmails() async {
@@ -51,6 +55,7 @@ class GmailHandler {
           messages.add(message);
           count++;
           debugPrint('Collected email #$count of $_messagesToCollect');
+          if (count > _messagesToCollect) break;
         }
 
         if (response.resultSizeEstimate! < messagesPerCall) break;
@@ -189,4 +194,37 @@ class GmailHandler {
     return '';
   }
 
+  void permaDeleteMessages(List<Message> messages) {
+    List<String> idsToDelete = [];
+
+    for (Message message in messages) {
+      idsToDelete.add(message.id!);
+    }
+
+    BatchDeleteMessagesRequest request = BatchDeleteMessagesRequest(ids: idsToDelete);
+    _gmailApi.users.messages.batchDelete(request, 'me');
+    debugPrint('permanently deleted ${idsToDelete.length} messages');
+  }
+
+  void trashMessages(List<Message> messages) {
+    int currentSecond = (stopwatch.elapsedMilliseconds ~/ 1000);
+    int index = 0;
+    bool flag = false;
+    while (index < messages.length) {
+      if (stopwatch.elapsedMilliseconds ~/ 1000 == currentSecond && trashCallsPerSecond >= 20) {
+        flag = true;
+        continue;
+      } else if (flag) {
+        currentSecond = stopwatch.elapsedMilliseconds ~/ 1000;
+        trashCallsPerSecond = 0;
+        flag = false;
+      }
+      debugPrint('trashing msg #${index + 1} of ${messages.length}');
+
+      _gmailApi.users.messages.trash('me', messages[index].id!);
+      debugPrint('deleted msg ${index + 1}');
+      trashCallsPerSecond++;
+      index++;
+    }
+  }
 }
