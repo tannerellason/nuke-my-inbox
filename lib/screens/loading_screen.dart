@@ -2,71 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import 'dart:io' show exit;
 
 import 'package:nuke_my_inbox/scripts/state_provider.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
-
-  List<Widget> _buildList(BuildContext context) {
-    String statusMessage = Provider.of<StateProvider>(context, listen: false).status;
-    List<String> lineSplit = statusMessage.split('\n');
-    List<Widget> returnList = [];
-
-    returnList.add(const Padding(padding: EdgeInsets.only(top: 100)));
-
-    for (String line in lineSplit) {
-      returnList.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Text(line)
-            )
-          ]
-        )
-      );
-    }
-
-    returnList.add(Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [TextButton(
-        onPressed: () {
-          
-        },
-        child: const Text('Cancel')
-      )]
-    ));
-
-    if (lineSplit[0] == 'Done processing') {
-      return [
-        const Padding(padding: EdgeInsets.only(top: 100)),
-        Center(
-          child: ElevatedButton(
-            onPressed: () => context.go('/flagger'),
-            child: const Text('Next page'),
-          ),
-        )
-      ];
-    }
-
-    if (lineSplit[0] == 'Done') {
-      return [
-        Center(
-          child: ElevatedButton(
-            onPressed: () {
-              exit(0);
-            },
-            child: const Text('Exit')
-          )
-        )
-      ];
-    }
-
-    return returnList;
-  }
   
   @override
   Widget build(BuildContext context) {
@@ -77,7 +17,7 @@ class LoadingScreen extends StatelessWidget {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: _buildList(context)
+        children: Provider.of<StateProvider>(context, listen: false).statusWidgets
       ),
     );
   }
