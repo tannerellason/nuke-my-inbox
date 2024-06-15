@@ -45,7 +45,7 @@ class LoginScreen extends StatelessWidget {
                       labelText: 'Number of emails to process',
                     ),
                     onSubmitted: (String value) {
-                      Provider.of<StateProvider>(context, listen: false).setNumberOfMessages(int.parse(value));
+                      Provider.of<StateProvider>(context, listen: false).setMessagseToCollect(int.parse(value));
                     },
                   ),
                 )

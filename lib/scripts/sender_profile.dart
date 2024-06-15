@@ -29,9 +29,32 @@ class SenderProfile {
   List<String> get unsubLinks => _unsubLinks;
   List<Message> get messages => _messages;
   
-  set flagged(bool value) => _flagged = value;
-  set trash(bool value) => _trash = value;
-  set permaDelete(bool value) => _permaDelete = value;
+  void setFlagged(bool value) {
+    if (value) _flagged = true;
+    else {
+      _flagged = false;
+      _trash = false;
+      _permaDelete = false;
+    }
+  }
+
+  void setTrash(bool value) {
+    if (value) {
+      _flagged = true;
+      _trash = true;
+    } else {
+      _trash = false;
+      _permaDelete = false;
+    }
+  }
+
+  void setPermaDelete(bool value) {
+    if (value) {
+      _flagged = true;
+      _trash = true;
+      _permaDelete = true;
+    } else _permaDelete = false;
+  }
 
   void addMessage(Message message) { 
     _messages.add(message);
