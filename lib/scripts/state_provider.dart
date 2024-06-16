@@ -19,6 +19,7 @@ class StateProvider extends ChangeNotifier {
   List<String> _flaggedLinks = []; // ignore: prefer_final_fields
   bool _collectionStarted = false;
   int _messagesToCollect = 100;
+  bool _showAll = false;
 
   String get status => _status;
   List<Column> get statusWidgets => _statusWidgets;
@@ -26,6 +27,7 @@ class StateProvider extends ChangeNotifier {
   bool get collectAll => _collectAll;
   List<String> get flaggedLinks => _flaggedLinks;
   int get messagesToCollect => _messagesToCollect;
+  bool get showAll => _showAll;
 
   void setStatus(String value) {
     _status = value;
@@ -53,6 +55,10 @@ class StateProvider extends ChangeNotifier {
   }
   void setPermaDelete(SenderProfile profile, bool value) {
     profile.setPermaDelete(value);
+    notifyListeners();
+  }
+  void setShowAll(bool value) {
+    _showAll = value;
     notifyListeners();
   }
 

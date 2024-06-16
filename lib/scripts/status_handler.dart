@@ -106,4 +106,3 @@ class StatusHandler {
     return widgetList;
   }
 }
-

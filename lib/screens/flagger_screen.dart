@@ -12,9 +12,30 @@ class FlaggerScreen extends StatelessWidget {
     List<SenderProfile>? senderProfiles = Provider.of<StateProvider>(context).senderProfiles;
     List<Widget> widgetList = [];
     widgetList.add(const Padding(padding: EdgeInsets.only(top: 30)));
+    widgetList.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Show senders with links found'),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Switch(
+              value: Provider.of<StateProvider>(context, listen: false).showAll,
+              onChanged: (value) {
+                Provider.of<StateProvider>(context, listen: false).setShowAll(value);
+              },
+            ),
+          ),
+
+          const Text('Show all senders'),
+        ],
+      )
+    );
+    widgetList.add(const Padding(padding: EdgeInsets.only(top: 30)));
     
     for (SenderProfile senderProfile in senderProfiles) {
-      if (senderProfile.numberOfUnsubLinks == 0) continue;
+      if (senderProfile.numberOfUnsubLinks == 0 && !Provider.of<StateProvider>(context, listen: false).showAll) continue;
       widgetList.addAll([
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
