@@ -19,7 +19,7 @@ class StateProvider extends ChangeNotifier {
   List<Column> _loadingWidgets = [];
   List<SenderProfile> _senderProfiles = [];
   bool _collectAll = false;
-  List<String> _flaggedLinks = [];
+  List<String> _flaggedLinks = []; // ignore: prefer_final_fields
   bool _collectionStarted = false;
   int _messagesToCollect = 100;
 
@@ -59,24 +59,12 @@ class StateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void signInWithGoogle(BuildContext context) async {
+  void signInWithGoogle() async {
     _gmailApi = await AuthHandler.initGmailApi();
-    _senderProfiles = await collectEmails(context);
+    _senderProfiles = await collectEmails();
   }
 
-  void initFlagHandler(BuildContext context) {
-    for (SenderProfile profile in _senderProfiles) {
-      if (profile.flagged) 
-          _flaggedLinks.addAll(profile.unsubLinks);
-
-      if (profile.permaDelete) 
-          GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
-      else if (profile.trash) 
-          for (Message message in profile.messages) GmailHandler.trashMessage(_gmailApi, message.id!);
-    }
-  }
-
-  Future<List<SenderProfile>> collectEmails(BuildContext context) async {
+  Future<List<SenderProfile>> collectEmails() async {
     if (_collectionStarted) return [];
     _collectionStarted = true;
 
@@ -97,17 +85,33 @@ class StateProvider extends ChangeNotifier {
     String? pageToken;
     int count = 0;
     while (true) {
-      List<Message> messages = await GmailHandler.listMessages(_gmailApi, messagesPerCall, pageToken);
-      for (Message message in messages) {
+      List<Message> listResponse = await GmailHandler.listMessages(_gmailApi, messagesPerCall, pageToken);
+      for (Message message in listResponse) {
         messages.add(await GmailHandler.getMessage(_gmailApi, message.id!));
+
         count++;
         if (count > _messagesToCollect) break;
-        StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds);
+
+        _loadingWidgets = StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds);
+        notifyListeners();
       }
       if (count >= _messagesToCollect) break;
     }
 
+    _loadingWidgets = StatusHandler.stringStatusBuilder('Done collecting');
+    notifyListeners();
     return GmailHandler.processMessages(messages);
   }
 
+  void initFlagHandler() {
+    for (SenderProfile profile in _senderProfiles) {
+      if (profile.flagged) 
+          _flaggedLinks.addAll(profile.unsubLinks);
+
+      if (profile.permaDelete) 
+          GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
+      else if (profile.trash) 
+          for (Message message in profile.messages) GmailHandler.trashMessage(_gmailApi, message.id!);
+    }
+  }
 }

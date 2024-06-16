@@ -22,13 +22,13 @@ class GmailHandler {
 
   static Future<Message> getMessage(GmailApi api, String messageId) async {
     Message? message;
-    final Timer timer = Timer(const Duration(milliseconds: 21), () async {
+    await Future.delayed(const Duration(milliseconds: 21), () async {
       message = await api.users.messages.get('me', messageId);
     });
     return message!;
   }
 
-  static void permaDeleteMessages(GmailApi api, List<Message> messages) {
+  static void permaDeleteMessages(GmailApi api, List<Message> messages) async {
     List<String> idsToDelete = [];
 
     for (Message message in messages) {
@@ -37,13 +37,13 @@ class GmailHandler {
 
     BatchDeleteMessagesRequest request = BatchDeleteMessagesRequest(ids: idsToDelete);
 
-    final Timer timer = Timer(const Duration(milliseconds: 201), () async {
+    await Future.delayed(const Duration(milliseconds: 201), () async {
       await api.users.messages.batchDelete(request, 'me');
     });
   }
 
-  static void trashMessage(GmailApi api, String messageId) {
-    final Timer timer = Timer(const Duration(milliseconds: 21), () async {
+  static void trashMessage(GmailApi api, String messageId) async {
+    await Future.delayed(const Duration(milliseconds: 21), () async {
       await api.users.messages.trash('me', messageId);
     });
   }

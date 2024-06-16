@@ -96,7 +96,7 @@ class FlaggerScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.navigate_next),
         onPressed: () {
-          Provider.of<StateProvider>(context, listen: false).initFlagHandler(context);
+          Provider.of<StateProvider>(context, listen: false).initFlagHandler();
         }
       ),
     );

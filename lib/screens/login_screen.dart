@@ -59,7 +59,7 @@ class LoginScreen extends StatelessWidget {
                 text: 'Sign In With Google',
                 icon: Icons.login,
                 onPressed: () {
-                  Provider.of<StateProvider>(context, listen: false).signInWithGoogle(context);
+                  Provider.of<StateProvider>(context, listen: false).signInWithGoogle();
                   context.go('/loading');
                 },
                 backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
