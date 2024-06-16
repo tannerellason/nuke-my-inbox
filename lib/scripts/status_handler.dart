@@ -82,5 +82,28 @@ class StatusHandler {
     ];
     return widgetList;
   }
+
+  static List<Column> flagHandlerStatusBuilder(List<String> statusLines) {
+    List<Row> wrappedStatusLines = [];
+    for (String line in statusLines) {
+      Row wrappedLine = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(line),
+          const Padding(padding: EdgeInsets.only(top: 10))
+        ],
+      );
+      wrappedStatusLines.add(wrappedLine);
+    }
+
+    List<Column> widgetList = [
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: wrappedStatusLines,
+      )
+    ];
+
+    return widgetList;
+  }
 }
 

@@ -9,9 +9,24 @@ import 'sender_profile.dart';
 
 class GmailHandler {
 
+  // These are to ensure that we don't overload the API.
+  // We are allowed 250 total 'quota units' per second.
+  // List, Get, and Trash all cost 5.
+  // BatchDelete costs 50.
+  // 
+  // I've had problems in testing when trash QUICKLY overwhelms
+  // the API, and these are to prevent that, at the cost of performance.
+  // 
+  // List and get all have a delay of 0 because I haven't seen them
+  // overwhelm the API yet. Any issues should be reported.
+  static const Duration delayBetweenLists = Duration(milliseconds: 0);
+  static const Duration delayBetweenGets = Duration(milliseconds: 0);
+  static const Duration delayBetweenBatchDeletes = Duration(milliseconds: 200);
+  static const Duration delayBetweenTrashes = Duration(milliseconds: 20);
+
   static Future<List<Message>> listMessages(GmailApi api, int messagesToList, String? pageToken) async {
     ListMessagesResponse? response;
-    await Future.delayed(const Duration(milliseconds: 21), () async {
+    await Future.delayed(delayBetweenLists, () async {
       if (pageToken != null) 
           response =  await api.users.messages.list('me', maxResults: messagesToList, pageToken: pageToken);
       else 
@@ -22,13 +37,13 @@ class GmailHandler {
 
   static Future<Message> getMessage(GmailApi api, String messageId) async {
     Message? message;
-    await Future.delayed(const Duration(milliseconds: 21), () async {
+    await Future.delayed(delayBetweenGets, () async {
       message = await api.users.messages.get('me', messageId);
     });
     return message!;
   }
 
-  static void permaDeleteMessages(GmailApi api, List<Message> messages) async {
+  static Future<void> permaDeleteMessages(GmailApi api, List<Message> messages) async {
     List<String> idsToDelete = [];
 
     for (Message message in messages) {
@@ -37,13 +52,13 @@ class GmailHandler {
 
     BatchDeleteMessagesRequest request = BatchDeleteMessagesRequest(ids: idsToDelete);
 
-    await Future.delayed(const Duration(milliseconds: 201), () async {
+    await Future.delayed(delayBetweenBatchDeletes, () async {
       await api.users.messages.batchDelete(request, 'me');
     });
   }
 
-  static void trashMessage(GmailApi api, String messageId) async {
-    await Future.delayed(const Duration(milliseconds: 21), () async {
+  static Future<void> trashMessage(GmailApi api, String messageId) async {
+    await Future.delayed(delayBetweenTrashes, () async {
       await api.users.messages.trash('me', messageId);
     });
   }
@@ -55,6 +70,7 @@ class GmailHandler {
       String sender = Utils.getSenderFromMessage(message);
       String name = Utils.getNameFromSender(sender);
       String email = Utils.getEmailFromSender(sender);
+
       String link = Utils.getLinkFromPayload(message.payload!);
 
       bool senderFound = false;
@@ -62,7 +78,7 @@ class GmailHandler {
         if (profile.sender != sender) continue;
 
         profile.addMessage(message);
-        profile.addLink(link);
+        if (!profile.unsubLinks.contains(link)) profile.addLink(link);
         senderFound = true;
         
       }
@@ -175,5 +191,11 @@ class Utils {
     }
 
     return '';
+  }
+
+  static String removeLinkParameters(String link) {
+    return link.indexOf('?') == -1
+        ? link
+        : link.substring(0, link.indexOf('?'));
   }
 }

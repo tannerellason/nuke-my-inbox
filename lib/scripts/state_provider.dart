@@ -13,7 +13,7 @@ class StateProvider extends ChangeNotifier {
 
   late final GmailApi _gmailApi;
   String _status = '';
-  List<Column> _loadingWidgets = [];
+  List<Column> _statusWidgets = [];
   List<SenderProfile> _senderProfiles = [];
   bool _collectAll = false;
   List<String> _flaggedLinks = []; // ignore: prefer_final_fields
@@ -21,7 +21,7 @@ class StateProvider extends ChangeNotifier {
   int _messagesToCollect = 100;
 
   String get status => _status;
-  List<Column> get loadingWidgets => _loadingWidgets;
+  List<Column> get statusWidgets => _statusWidgets;
   List<SenderProfile> get senderProfiles => _senderProfiles;
   bool get collectAll => _collectAll;
   List<String> get flaggedLinks => _flaggedLinks;
@@ -31,8 +31,8 @@ class StateProvider extends ChangeNotifier {
     _status = value;
     notifyListeners();
   }
-  void setLoadingWidgets(List<Column> value) {
-    _loadingWidgets = value;
+  void setStatusWidgets(List<Column> value) {
+    _statusWidgets = value;
     notifyListeners();
   }
   void setCollectAll(bool value) {
@@ -57,10 +57,10 @@ class StateProvider extends ChangeNotifier {
   }
 
   void signInWithGoogle(BuildContext context) async {
-    setLoadingWidgets(StatusHandler.stringStatusBuilder('Initializing gmail, please wait'));
+    setStatusWidgets(StatusHandler.stringStatusBuilder('Initializing gmail, please wait'));
     _gmailApi = await AuthHandler.initGmailApi();
     _senderProfiles = await collectEmails();
-    setLoadingWidgets(StatusHandler.doneProcessingBuilder(context));
+    setStatusWidgets(StatusHandler.doneProcessingBuilder(context));
   }
 
   Future<List<SenderProfile>> collectEmails() async {
@@ -91,26 +91,48 @@ class StateProvider extends ChangeNotifier {
         count++;
         if (count > _messagesToCollect) break;
 
-        setLoadingWidgets(StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds));
+        setStatusWidgets(StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds));
         notifyListeners();
       }
       if (count >= _messagesToCollect) break;
     }
 
-    setLoadingWidgets(StatusHandler.stringStatusBuilder('Done collecting'));
+    setStatusWidgets(StatusHandler.stringStatusBuilder('Done collecting'));
     notifyListeners();
-    return GmailHandler.processMessages(messages);
+    return await GmailHandler.processMessages(messages);
   }
 
-  void initFlagHandler() {
-    for (SenderProfile profile in _senderProfiles) {
-      if (profile.flagged) 
-          _flaggedLinks.addAll(profile.unsubLinks);
+  void handleFlags() async {
+    List<String> statusLines = [ 'Initializing...' ];
+    setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines)); 
 
-      if (profile.permaDelete) 
-          GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
-      else if (profile.trash) 
-          for (Message message in profile.messages) GmailHandler.trashMessage(_gmailApi, message.id!);
+    for (SenderProfile profile in _senderProfiles) {
+      if (!profile.flagged) continue;
+
+      _flaggedLinks.addAll(profile.unsubLinks);
+
+      if (profile.permaDelete) {
+        statusLines.add('Permanently deleting messages from ${profile.name} ...');
+        setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines));
+
+        await GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
+
+        statusLines.last = 'Permanently deleting messages from ${profile.name} ... Done';
+        setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines));
+      }
+
+      else if (profile.trash) {
+        statusLines.add('Trashing messages from ${profile.name} ...');
+        setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines));
+
+        for (int i = 0; i < profile.numberOfMessages; i++) {
+          await GmailHandler.trashMessage(_gmailApi, profile.messages[i].id!);
+        }
+
+        statusLines.last = 'Trashing messages from ${profile.name} ... Done';
+        setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines));
+
+      }
     }
   }
 }

@@ -17,7 +17,7 @@ class LoadingScreen extends StatelessWidget {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: Provider.of<StateProvider>(context, listen: false).loadingWidgets
+        children: Provider.of<StateProvider>(context, listen: false).statusWidgets
       ),
     );
   }
