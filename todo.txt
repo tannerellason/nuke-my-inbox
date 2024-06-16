@@ -1,5 +1,4 @@
 - Revamp login screen(s)
 - Fix web app signin() function
-- Implement action screen
-- Add new ChangeNotifierProvider
-- Status message stuff
+- Add the ability to control whether to show ALL senders or just those with at least one link
+- Do something with the unsub links. Auto click them maybe? Customizability at heart
