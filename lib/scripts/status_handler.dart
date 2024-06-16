@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class StatusHandler {
-
   static List<Column> collectionStatusBuilder(int numberCollected, int totalMessages, int millisElapsed) {
     double secondsElapsed = millisElapsed / 1000;
     double collectionsPerSecond = numberCollected / secondsElapsed;
@@ -23,7 +23,7 @@ class StatusHandler {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text('$numberCollected collected of $totalMessages, $collectionsPerSecondString/s')],
+            children: [Text('Collected $numberCollected of $totalMessages messages, $collectionsPerSecondString/s')],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -53,6 +53,33 @@ class StatusHandler {
       )
     ];
 
+    return widgetList;
+  }
+
+  static List<Column> doneProcessingBuilder(BuildContext context) {
+    List<Column> widgetList = [
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Done processing'),
+            ],
+          ),
+          const Padding(padding: EdgeInsets.only(top: 20)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                child: const Text('Next page'),
+                onPressed: () => context.go('/flagger'),
+              ),
+            ],
+          )
+        ],
+      ),
+    ];
     return widgetList;
   }
 }

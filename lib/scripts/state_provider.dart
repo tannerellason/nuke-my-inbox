@@ -1,14 +1,11 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
-// State provider imports
 import 'package:flutter/material.dart';
+import 'package:googleapis/gmail/v1.dart';
 
 import 'sender_profile.dart';
 import 'auth_handler.dart';
 import 'status_handler.dart';
-
-// Gmail handler imports
-import 'package:googleapis/gmail/v1.dart';
 import 'gmail_handler.dart';
 
 
@@ -59,9 +56,11 @@ class StateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void signInWithGoogle() async {
+  void signInWithGoogle(BuildContext context) async {
+    setLoadingWidgets(StatusHandler.stringStatusBuilder('Initializing gmail, please wait'));
     _gmailApi = await AuthHandler.initGmailApi();
     _senderProfiles = await collectEmails();
+    setLoadingWidgets(StatusHandler.doneProcessingBuilder(context));
   }
 
   Future<List<SenderProfile>> collectEmails() async {
@@ -92,13 +91,13 @@ class StateProvider extends ChangeNotifier {
         count++;
         if (count > _messagesToCollect) break;
 
-        _loadingWidgets = StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds);
+        setLoadingWidgets(StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds));
         notifyListeners();
       }
       if (count >= _messagesToCollect) break;
     }
 
-    _loadingWidgets = StatusHandler.stringStatusBuilder('Done collecting');
+    setLoadingWidgets(StatusHandler.stringStatusBuilder('Done collecting'));
     notifyListeners();
     return GmailHandler.processMessages(messages);
   }
