@@ -194,7 +194,7 @@ class Utils {
   }
 
   static String removeLinkParameters(String link) {
-    return link.indexOf('?') == -1
+    return link.contains('?')
         ? link
         : link.substring(0, link.indexOf('?'));
   }

@@ -2,4 +2,7 @@
 - Fix web app signin() function
 - Add the ability to control whether to show ALL senders or just those with at least one link
 - Do something with the unsub links. Auto click them maybe? Customizability at heart
-- Fix justification of flagger screen
+- Revamp flagger screen:
+    - Select actions per sender based on a dropdown menu instead of multiple switches
+    - Have a separate button to show all links found for the sender.
+       Add text to use discretion, as not all links need to be clicked.
