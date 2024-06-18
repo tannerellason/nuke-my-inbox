@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-import 'screens/loading_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/loading_screen.dart';
 import 'screens/flagger_screen.dart';
 import 'scripts/state_provider.dart';
 
@@ -26,6 +27,12 @@ final _router = GoRouter(
         builder: (context, appState, _) => LoginScreen(),
       ),
       routes: <RouteBase>[
+        GoRoute(
+          path: 'settings',
+          builder: (context, state) => Consumer<StateProvider>(
+            builder: (context, appState, _) => SettingsScreen(),
+          )
+        ),
         GoRoute(
           path: 'loading',
           builder: (context, state) => Consumer<StateProvider>(

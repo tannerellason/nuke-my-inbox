@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:googleapis/gmail/v1.dart';
+import 'package:go_router/go_router.dart';
 
 import 'sender_profile.dart';
 import 'auth_handler.dart';
@@ -14,12 +15,13 @@ class StateProvider extends ChangeNotifier {
   late final GmailApi _gmailApi;
   String _status = '';
   List<Column> _statusWidgets = [];
-  List<SenderProfile> _senderProfiles = [];
+  List<SenderProfile> _senderProfiles = []; // ignore: prefer_final_fields
   bool _collectAll = false;
   List<String> _flaggedLinks = []; // ignore: prefer_final_fields
   bool _collectionStarted = false;
   int _messagesToCollect = 100;
   bool _showAll = false;
+  int _maxMessages = 0;
 
   String get status => _status;
   List<Column> get statusWidgets => _statusWidgets;
@@ -28,6 +30,7 @@ class StateProvider extends ChangeNotifier {
   List<String> get flaggedLinks => _flaggedLinks;
   int get messagesToCollect => _messagesToCollect;
   bool get showAll => _showAll;
+  int get maxMessages => _maxMessages;
 
   void setStatus(String value) {
     _status = value;
@@ -41,8 +44,10 @@ class StateProvider extends ChangeNotifier {
     _collectAll = value;
     notifyListeners();
   }
-  void setMessagseToCollect(int value) {
+  void setMessagesToCollect(int value) {
+    if (value > _maxMessages) value = _maxMessages;
     _messagesToCollect = value;
+    textController.text = '';
     notifyListeners();
   }
   void setFlagged(SenderProfile profile, bool value) {
@@ -62,23 +67,23 @@ class StateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  TextEditingController textController = TextEditingController();
+
   void signInWithGoogle(BuildContext context) async {
     setStatusWidgets(StatusHandler.stringStatusBuilder('Initializing gmail, please wait'));
     _gmailApi = await AuthHandler.initGmailApi();
-    _senderProfiles = await collectEmails();
-    setStatusWidgets(StatusHandler.doneProcessingBuilder(context));
+    Profile profile = await _gmailApi.users.getProfile('me');
+    _maxMessages = profile.messagesTotal!;
+    context.go('/settings');     // ignore: use_build_context_synchronously
   }
 
-  Future<List<SenderProfile>> collectEmails() async {
-    if (_collectionStarted) return [];
+  Future<void> collectEmails(BuildContext context) async {
+    if (_collectionStarted) return;
     _collectionStarted = true;
 
     List<Message> messages = [];
     
-    if (_collectAll) {
-      Profile profile = await _gmailApi.users.getProfile('me');
-      _messagesToCollect = profile.messagesTotal!;
-    }
+    if (_collectAll) _messagesToCollect = _maxMessages;
 
     int messagesPerCall = _messagesToCollect < 500
         ? _messagesToCollect
@@ -103,9 +108,13 @@ class StateProvider extends ChangeNotifier {
       if (count >= _messagesToCollect) break;
     }
 
-    setStatusWidgets(StatusHandler.stringStatusBuilder('Done collecting'));
+    setStatusWidgets(StatusHandler.stringStatusBuilder('Please wait for emails to be processed'));
     notifyListeners();
-    return await GmailHandler.processMessages(messages);
+
+    _senderProfiles = await GmailHandler.processMessages(messages);
+
+    setStatusWidgets(StatusHandler.doneProcessingBuilder(context));
+    notifyListeners();
   }
 
   void handleFlags() async {

@@ -59,8 +59,14 @@ class FlaggerScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Most recent message: ${senderProfile.time}'),
+            Text('Time of last message: ${senderProfile.time}'),
           ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Example snippet: ${senderProfile.snippet}')
+          ]
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
