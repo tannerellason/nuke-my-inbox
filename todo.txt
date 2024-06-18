@@ -6,3 +6,6 @@
     - Select actions per sender based on a dropdown menu instead of multiple switches
     - Have a separate button to show all links found for the sender.
        Add text to use discretion, as not all links need to be clicked.
+    - Maybe also add a button to dismiss? Haven't decided on this yet
+    - More information on each flagger. Give an example of a snippet from them, and the date of their most recent message.
+- Implement crash handling

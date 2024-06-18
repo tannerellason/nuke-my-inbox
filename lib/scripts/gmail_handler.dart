@@ -68,10 +68,10 @@ class GmailHandler {
 
     for (Message message in messages) {
       String sender = Utils.getSenderFromMessage(message);
-      String name = Utils.getNameFromSender(sender);
-      String email = Utils.getEmailFromSender(sender);
-
-      String link = Utils.getLinkFromPayload(message.payload!);
+      String name   = Utils.getNameFromSender(sender);
+      String email  = Utils.getEmailFromSender(sender);
+      String link   = Utils.getLinkFromPayload(message.payload!);
+      DateTime time = Utils.getDateTimeFromMessage(message);
 
       bool senderFound = false;
       for (SenderProfile profile in profiles) {
@@ -84,7 +84,7 @@ class GmailHandler {
       }
 
       if (!senderFound) {
-        SenderProfile profile = SenderProfile(sender, name, email, message, link);
+        SenderProfile profile = SenderProfile(sender, name, email, message, link, time);
         profiles.add(profile);
       }
     }
@@ -197,5 +197,9 @@ class Utils {
     return link.contains('?')
         ? link
         : link.substring(0, link.indexOf('?'));
+  }
+
+  static DateTime getDateTimeFromMessage(Message message) {
+    return DateTime.fromMillisecondsSinceEpoch(int.parse(message.internalDate!));
   }
 }
