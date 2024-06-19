@@ -115,6 +115,11 @@ class StateProvider extends ChangeNotifier {
     setStatusWidgets(StatusHandler.doneProcessingBuilder(context));
   }
 
+  void trashMessages(SenderProfile profile) {
+    for (Message message in profile.messages) 
+      GmailHandler.trashMessage(_gmailApi, message.id!);
+  }
+
   void handleFlags() async {
     List<String> statusLines = [ 'Initializing...' ];
     setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines)); 

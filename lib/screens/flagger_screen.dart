@@ -71,6 +71,35 @@ class FlaggerScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            TextButton(
+              child: const Text('Trash'),
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Are you sure?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Provider.of<StateProvider>(context, listen: false).trashMessages(senderProfile);
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    )
+                  ]
+                )
+              )
+            )
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             const Text('Flag? \t\t\t\t'),
             Switch(
               value: senderProfile.flagged,
