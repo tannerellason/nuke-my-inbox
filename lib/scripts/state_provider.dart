@@ -109,12 +109,10 @@ class StateProvider extends ChangeNotifier {
     }
 
     setStatusWidgets(StatusHandler.stringStatusBuilder('Please wait for emails to be processed'));
-    notifyListeners();
 
     _senderProfiles = await GmailHandler.processMessages(messages);
 
     setStatusWidgets(StatusHandler.doneProcessingBuilder(context));
-    notifyListeners();
   }
 
   void handleFlags() async {

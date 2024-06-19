@@ -31,20 +31,24 @@ final _router = GoRouter(
           path: 'settings',
           builder: (context, state) => Consumer<StateProvider>(
             builder: (context, appState, _) => SettingsScreen(),
-          )
-        ),
-        GoRoute(
-          path: 'loading',
-          builder: (context, state) => Consumer<StateProvider>(
-            builder: (context, appState, _) => LoadingScreen(),
           ),
+          routes: <RouteBase>[
+            GoRoute(
+              path: 'loading',
+              builder: (context, state) => Consumer<StateProvider>(
+                builder: (context, appState, _) => LoadingScreen(),
+              ),
+              routes: <RouteBase> [
+                GoRoute(
+                  path: 'flagger',
+                  builder: (context, state) => Consumer<StateProvider>(
+                    builder: (context, appState, _) => FlaggerScreen(),
+                  )
+                )
+              ]
+            ),
+          ]
         ),
-        GoRoute(
-          path: 'flagger',
-          builder: (context, state) => Consumer<StateProvider>(
-            builder: (context, appState, _) => FlaggerScreen(),
-          )
-        )
       ]
     ),
   ],

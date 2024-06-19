@@ -73,7 +73,7 @@ class StatusHandler {
             children: [
               TextButton(
                 child: const Text('Next page'),
-                onPressed: () => context.go('/flagger'),
+                onPressed: () => context.go('/settings/loading/flagger'),
               ),
             ],
           )

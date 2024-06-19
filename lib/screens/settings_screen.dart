@@ -92,7 +92,7 @@ class SettingsScreen extends StatelessWidget {
         label: const Text('Next page'),
         icon: const Icon(Icons.navigate_next),
         onPressed: () {
-          context.go('/loading');
+          context.go('/settings/loading');
           Provider.of<StateProvider>(context, listen: false).collectEmails(context);
         }
       ),
