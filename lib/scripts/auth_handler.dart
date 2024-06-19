@@ -15,7 +15,7 @@ class AuthHandler {
   static Future<GmailApi> initGmailApi() async {
     String? name;
     if (kIsWeb) {}
-    else if (Platform.isIOS) name = 'NukeMyInbox';
+    else if (Platform.isIOS) name = 'nukemyinbox';
 
     Firebase.initializeApp(
       name: name,

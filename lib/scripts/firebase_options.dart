@@ -46,9 +46,9 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return '1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com';
+        return '';
       case TargetPlatform.iOS:
-        return '1031401823307-cpi4g7pm06vap2qr09gc1p0mj8a0s6qt.apps.googleusercontent.com';
+        return '1031401823307-a8f1u2nlgd5a26fc1m3uk6vk009nv4kq.apps.googleusercontent.com';
       case TargetPlatform.macOS:
         return 'com.googleusercontent.apps.1031401823307-nnuald2l89jpehervv54b96pcgre19uj';
       case TargetPlatform.windows:
@@ -75,22 +75,21 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBaMaeSoycpTBaaPThOVvwwRK-uuCFaKhI',
-    appId: '1:1031401823307:android:059c82c8487d48327581ce',
+    apiKey: 'AIzaSyCFAduzLvHcNLtElzyv39afrIi6Shg0idk',
+    appId: '1:1031401823307:android:d4af2708e0d945877581ce',
     messagingSenderId: '1031401823307',
     projectId: 'nuke-my-inbox',
     storageBucket: 'nuke-my-inbox.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAKJ4hp_W8Rlx4IpAPrnilF35LzEUT-Bdk',
-    appId: '1:1031401823307:ios:ad4115013e8aac0e7581ce',
+    apiKey: 'AIzaSyDVpVxz4UvY9yA8Kk9hVGKS9GzTz6xEMvE',
+    appId: '1:1031401823307:ios:91dd2c0505d6e3747581ce',
     messagingSenderId: '1031401823307',
     projectId: 'nuke-my-inbox',
     storageBucket: 'nuke-my-inbox.appspot.com',
-    androidClientId: '1031401823307-0pmfc65s2ohlc3an0fa7thgvn6gv3gvn.apps.googleusercontent.com',
-    iosClientId: '1031401823307-nnuald2l89jpehervv54b96pcgre19uj.apps.googleusercontent.com',
-    iosBundleId: 'com.example.nukeMyInbox',
+    iosClientId: '1031401823307-a8f1u2nlgd5a26fc1m3uk6vk009nv4kq.apps.googleusercontent.com',
+    iosBundleId: 'com.tannerellason.nukemyinbox',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

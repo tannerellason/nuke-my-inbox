@@ -7,42 +7,34 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1031401823307:android:059c82c8487d48327581ce",
+        "mobilesdk_app_id": "1:1031401823307:android:d4af2708e0d945877581ce",
         "android_client_info": {
-          "package_name": "com.example.nuke_my_inbox"
+          "package_name": "com.tannerellason.nukemyinbox"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1031401823307-48hf31f7its2kfjgafi8qvpn75fp3fnv.apps.googleusercontent.com",
+          "client_id": "1031401823307-ihbp4ionvp17k9td993eld9cmd0ba210.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.nuke_my_inbox",
+            "package_name": "com.tannerellason.nukemyinbox",
             "certificate_hash": "82c786b054fe40fbb47f70f36a4d9c909f581e02"
           }
-        },
-        {
-          "client_id": "1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBaMaeSoycpTBaaPThOVvwwRK-uuCFaKhI"
+          "current_key": "AIzaSyCFAduzLvHcNLtElzyv39afrIi6Shg0idk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1031401823307-ckkg0a3pk9p9itlorvipguk4e9dfv2ns.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1031401823307-g0sbd9mdkf8df43o44ii4ikkr3op2ccb.apps.googleusercontent.com",
+              "client_id": "1031401823307-ihbp4ionvp17k9td993eld9cmd0ba210.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.google.firebase.presents.demo"
+                "bundle_id": "com.tannerellason.nukemyinbox"
               }
             }
           ]

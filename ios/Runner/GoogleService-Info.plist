@@ -3,19 +3,19 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1031401823307-nnuald2l89jpehervv54b96pcgre19uj.apps.googleusercontent.com</string>
+	<string>1031401823307-a8f1u2nlgd5a26fc1m3uk6vk009nv4kq.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1031401823307-nnuald2l89jpehervv54b96pcgre19uj</string>
+	<string>com.googleusercontent.apps.1031401823307-a8f1u2nlgd5a26fc1m3uk6vk009nv4kq</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>1031401823307-0pmfc65s2ohlc3an0fa7thgvn6gv3gvn.apps.googleusercontent.com</string>
+	<string>1031401823307-ihbp4ionvp17k9td993eld9cmd0ba210.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAppPX2_NdRQl7ddyCT-ij16IMO13ebjO8</string>
+	<string>AIzaSyDVpVxz4UvY9yA8Kk9hVGKS9GzTz6xEMvE</string>
 	<key>GCM_SENDER_ID</key>
 	<string>1031401823307</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.nukeMyInbox</string>
+	<string>com.tannerellason.nukemyinbox</string>
 	<key>PROJECT_ID</key>
 	<string>nuke-my-inbox</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1031401823307:ios:ad4115013e8aac0e7581ce</string>
+	<string>1:1031401823307:ios:91dd2c0505d6e3747581ce</string>
 </dict>
 </plist>

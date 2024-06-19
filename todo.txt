@@ -1,5 +1,4 @@
 - POLISH. Make stuff look good
-- Fix web app signin() function
 - Do something with the unsub links. Auto click them maybe? Customizability at heart
 - Revamp flagger screen:
     - Select actions per sender based on a dropdown menu instead of multiple switches
