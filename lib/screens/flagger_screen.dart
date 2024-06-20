@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nuke_my_inbox/scripts/state_provider.dart';
 import 'package:nuke_my_inbox/scripts/sender_profile.dart';
 
@@ -73,99 +72,150 @@ class FlaggerScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
-              child: const Text('Trash Messages'),
-              onPressed: () => showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Are you sure?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Provider.of<StateProvider>(context, listen: false).trashMessages(senderProfile);
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Yes'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton.small(
+                tooltip: 'Show unsubscribe links',
+                onPressed: () => showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Text('Unsubscribe links for ${senderProfile.name}'),
+                    content: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: Provider.of<StateProvider>(context, listen: false).buildUnsubLinks(senderProfile),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Cancel'),
-                    )
-                  ]
-                )
+                  )
+                ),
+                
+                child: const Icon(Icons.remove_circle),
               )
-            )
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              child: const Text('Permanently Delete Messages'),
-              onPressed: () => showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Are you sure?'),
-                  content: const Text('THIS ACTION CANNOT BE UNDONE!'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text('ARE YOU CERTAIN?'),
-                          content: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'THIS ACTION CANNOT BE UNDONE. THESE EMAILS WILL BE LOST FOREVER. THERE IS NO WAY TO RECOVER THEM. '
-                                '\nNEITHER GOOGLE NOR THE DEVELOPER OF NUKE MY INBOX WILL BE ABLE TO HELP YOU RECOVER THESE EMAILS '
-                                '\nDO YOU UNDERSTAND?'
-                              ),
-                              const Text(
-                                'Type the following word in the text box to continue: DELETE'
-                              ),
-                              TextField(
-                                autocorrect: false,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                ),
-                                onChanged: (String value) {
-                                  Provider.of<StateProvider>(context, listen: false).setConfirmation(value);
-                                }
-                              )
-                            ],
-                          ),
-                          actions: [
-                            if (Provider.of<StateProvider>(context).validConfirmation) TextButton(
-                              onPressed: () {
-                                Provider.of<StateProvider>(context, listen: false).permaDeleteMessages(senderProfile);
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('YES, I UNDERSTAND'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Cancel'),
-                            )
-                          ]
-                        )
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton.small(
+                tooltip: 'Send all messages to trash',
+                onPressed: () => showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Send messages to trash?'),
+                    content: const Text('Are you sure?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Provider.of<StateProvider>(context, listen: false).trashMessages(senderProfile);
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Yes'),
                       ),
-                      child: const Text('Yes'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Cancel'),
-                    )
-                  ]
-                )
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
+                      )
+                    ]
+                  )
+                ),
+                child: const Icon(Icons.delete),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton.small(
+                tooltip: 'Delete all messages forever',
+                onPressed: () => showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Permanently Delete Messages?'),
+                    content: const Text('THIS ACTION CANNOT BE UNDONE!'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('ARE YOU CERTAIN?'),
+                            content: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'THIS ACTION CANNOT BE UNDONE. THESE EMAILS WILL BE LOST FOREVER. THERE IS NO WAY TO RECOVER THEM. '
+                                  '\nNEITHER GOOGLE NOR THE DEVELOPER OF NUKE MY INBOX WILL BE ABLE TO HELP YOU RECOVER THESE EMAILS '
+                                  '\nDO YOU UNDERSTAND?'
+                                ),
+                                const Text(
+                                  'Type the following word in the text box to continue: DELETE'
+                                ),
+                                TextField(
+                                  autocorrect: false,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onChanged: (String value) {
+                                    Provider.of<StateProvider>(context, listen: false).setConfirmation(value);
+                                  }
+                                )
+                              ],
+                            ),
+                            actions: [
+                              if (Provider.of<StateProvider>(context).validConfirmation) TextButton(
+                                onPressed: () {
+                                  Provider.of<StateProvider>(context, listen: false).permaDeleteMessages(senderProfile);
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('YES, I UNDERSTAND'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel'),
+                              )
+                            ]
+                          )
+                        ),
+                        child: const Text('Yes'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
+                      )
+                    ]
+                  )
+                ),
+                child: const Icon(Icons.delete_forever),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton.small(
+                tooltip: 'Dissmiss sender',
+                onPressed: () => showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Dismiss sender?'),
+                    content: const Text('Are you sure?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Provider.of<StateProvider>(context, listen: false).dismissSender(senderProfile);
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Yes'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
+                      )
+                    ]
+                  )
+                ),
+                child: const Icon(Icons.close),
               )
             )
           ],
@@ -192,13 +242,6 @@ class FlaggerScreen extends StatelessWidget {
       ),
       body: ListView(
         children: _buildList(context),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.navigate_next),
-        onPressed: () {
-          context.go('/loading');
-          Provider.of<StateProvider>(context, listen: false).handleFlags();
-        }
       ),
     );
   }

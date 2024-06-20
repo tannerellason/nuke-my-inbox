@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StatusHandler {
   static List<Column> collectionStatusBuilder(int numberCollected, int totalMessages, int millisElapsed) {
@@ -102,6 +103,24 @@ class StatusHandler {
         children: wrappedStatusLines,
       )
     ];
+
+    return widgetList;
+  }
+
+  static List<Widget> unsubLinksBuilder(List<String> unsubLinks) {
+    List<Widget> widgetList = [];
+
+    widgetList.add(const Text('Not all links can be differentiated via an algorithm, '
+    'and a lot of these links will unsubscribe from the same service. Use discretion'));
+
+    for (String link in unsubLinks) {
+      widgetList.add(
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse(link)),
+          child: Text(link),
+        ),
+      );
+    }
 
     return widgetList;
   }

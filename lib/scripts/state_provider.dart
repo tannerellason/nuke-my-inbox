@@ -72,8 +72,6 @@ class StateProvider extends ChangeNotifier {
   void setConfirmation(String value) {
     _confirmation = value;
     notifyListeners();
-    print(value);
-    print(validConfirmation);
   }
 
   TextEditingController textController = TextEditingController();
@@ -141,6 +139,11 @@ class StateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void dismissSender(SenderProfile profile) {
+    profile.handled = true;
+    notifyListeners();
+  }
+
   void handleFlags() async {
     List<String> statusLines = [ 'Initializing...' ];
     setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines)); 
@@ -173,5 +176,9 @@ class StateProvider extends ChangeNotifier {
 
       }
     }
+  }
+
+  List<Widget> buildUnsubLinks(SenderProfile profile) {
+    return StatusHandler.unsubLinksBuilder(profile.unsubLinks);
   }
 }
