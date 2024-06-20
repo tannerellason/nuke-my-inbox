@@ -22,6 +22,7 @@ class StateProvider extends ChangeNotifier {
   int _messagesToCollect = 100;
   bool _showAll = false;
   int _maxMessages = 0;
+  String _confirmation = '';
 
   String get status => _status;
   List<Column> get statusWidgets => _statusWidgets;
@@ -31,6 +32,8 @@ class StateProvider extends ChangeNotifier {
   int get messagesToCollect => _messagesToCollect;
   bool get showAll => _showAll;
   int get maxMessages => _maxMessages;
+  String get confirmation => _confirmation;
+  bool get validConfirmation => _confirmation == 'DELETE';
 
   void setStatus(String value) {
     _status = value;
@@ -66,6 +69,12 @@ class StateProvider extends ChangeNotifier {
     _showAll = value;
     notifyListeners();
   }
+  void setConfirmation(String value) {
+    _confirmation = value;
+    notifyListeners();
+    print(value);
+    print(validConfirmation);
+  }
 
   TextEditingController textController = TextEditingController();
 
@@ -95,7 +104,9 @@ class StateProvider extends ChangeNotifier {
     String? pageToken;
     int count = 0;
     while (true) {
+      
       List<Message> listResponse = await GmailHandler.listMessages(_gmailApi, messagesPerCall, pageToken);
+
       for (Message message in listResponse) {
         messages.add(await GmailHandler.getMessage(_gmailApi, message.id!));
 
@@ -103,6 +114,7 @@ class StateProvider extends ChangeNotifier {
         if (count > _messagesToCollect) break;
 
         setStatusWidgets(StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds));
+
         notifyListeners();
       }
       if (count >= _messagesToCollect) break;
@@ -112,12 +124,21 @@ class StateProvider extends ChangeNotifier {
 
     _senderProfiles = await GmailHandler.processMessages(messages);
 
-    setStatusWidgets(StatusHandler.doneProcessingBuilder(context));
+    setStatusWidgets(StatusHandler.doneProcessingBuilder(context)); // ignore: use_build_context_synchronously
   }
 
   void trashMessages(SenderProfile profile) {
     for (Message message in profile.messages) 
       GmailHandler.trashMessage(_gmailApi, message.id!);
+    profile.handled = true;
+    notifyListeners();
+  }
+
+  void permaDeleteMessages(SenderProfile profile) {
+    GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
+    profile.handled = true;
+    _confirmation = '';
+    notifyListeners();
   }
 
   void handleFlags() async {

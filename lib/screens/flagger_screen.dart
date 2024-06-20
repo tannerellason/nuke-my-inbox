@@ -35,7 +35,9 @@ class FlaggerScreen extends StatelessWidget {
     widgetList.add(const Padding(padding: EdgeInsets.only(top: 30)));
     
     for (SenderProfile senderProfile in senderProfiles) {
-      if (senderProfile.numberOfUnsubLinks == 0 && !Provider.of<StateProvider>(context, listen: false).showAll) continue;
+      if (senderProfile.numberOfUnsubLinks == 0 && !Provider.of<StateProvider>(context, listen: false).showAll) continue; // Toggling showing all or not
+      if (senderProfile.handled) continue; // Don't show profiles that we have already performed an action on
+
       widgetList.addAll([
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -72,7 +74,7 @@ class FlaggerScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              child: const Text('Trash'),
+              child: const Text('Trash Messages'),
               onPressed: () => showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
@@ -100,38 +102,73 @@ class FlaggerScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Flag? \t\t\t\t'),
-            Switch(
-              value: senderProfile.flagged,
-              onChanged: (value) {
-                Provider.of<StateProvider>(context, listen: false).setFlagged(senderProfile, value);
-              },
+            TextButton(
+              child: const Text('Permanently Delete Messages'),
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Are you sure?'),
+                  content: const Text('THIS ACTION CANNOT BE UNDONE!'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('ARE YOU CERTAIN?'),
+                          content: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'THIS ACTION CANNOT BE UNDONE. THESE EMAILS WILL BE LOST FOREVER. THERE IS NO WAY TO RECOVER THEM. '
+                                '\nNEITHER GOOGLE NOR THE DEVELOPER OF NUKE MY INBOX WILL BE ABLE TO HELP YOU RECOVER THESE EMAILS '
+                                '\nDO YOU UNDERSTAND?'
+                              ),
+                              const Text(
+                                'Type the following word in the text box to continue: DELETE'
+                              ),
+                              TextField(
+                                autocorrect: false,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                ),
+                                onChanged: (String value) {
+                                  Provider.of<StateProvider>(context, listen: false).setConfirmation(value);
+                                }
+                              )
+                            ],
+                          ),
+                          actions: [
+                            if (Provider.of<StateProvider>(context).validConfirmation) TextButton(
+                              onPressed: () {
+                                Provider.of<StateProvider>(context, listen: false).permaDeleteMessages(senderProfile);
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('YES, I UNDERSTAND'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            )
+                          ]
+                        )
+                      ),
+                      child: const Text('Yes'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    )
+                  ]
+                )
+              )
             )
-          ]
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Trash? \t\t\t\t'),
-            Switch(
-              value: senderProfile.trash,
-              onChanged: (value) {
-                Provider.of<StateProvider>(context, listen: false).setTrash(senderProfile, value);
-              },
-            )
-          ]
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Perma delete? \t\t'),
-            Switch(
-              value: senderProfile.permaDelete,
-              onChanged: (value) {
-                Provider.of<StateProvider>(context, listen: false).setPermaDelete(senderProfile, value);
-              },
-            )
-          ]
+          ],
         ),
         const Divider(),
       ]);

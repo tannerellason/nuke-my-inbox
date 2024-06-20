@@ -11,6 +11,7 @@ class SenderProfile {
   bool _flagged = false;
   bool _trash = false;
   bool _permaDelete = false;
+  bool _handled = false;
   String _sender = 'UNKNOWN SENDER';
   String _email = 'UNKNOWN EMAIL';
   String _name = 'UNKNOWN NAME';
@@ -22,30 +23,19 @@ class SenderProfile {
   bool get flagged => _flagged;
   bool get trash => _trash;
   bool get permaDelete => _permaDelete;
+  bool get handled => _handled;
   String get sender => _sender;
   String get email => _email;
   String get name => _name;
+  String get time => SenderProfileHelper.formatTime(_mostRecentMessageTime);
   String get snippet => _snippet;
   int get numberOfMessages => _messages.length;
   int get numberOfUnsubLinks => _unsubLinks.length;
 
-  String get time {
-    String minute = SenderProfileHelper.ensureDoubleDigit(_mostRecentMessageTime.minute);
-    String hour   = _mostRecentMessageTime.hour.toString();
-
-    String weekday  = SenderProfileHelper.getWeekDayFromInt(_mostRecentMessageTime.weekday);
-    int day         = _mostRecentMessageTime.day;
-    String month    = SenderProfileHelper.getMonthFromInt(_mostRecentMessageTime.month);
-    int year        = _mostRecentMessageTime.year;
-
-    String date = '$weekday, $month $day, $year';
-    String time = '$hour:$minute';
-
-    return '$date at $time';
-  }
-
   List<String> get unsubLinks => _unsubLinks;
   List<Message> get messages => _messages;
+
+  set handled (bool value) => _handled = value;
   
   void setFlagged(bool value) {
     if (value) _flagged = true;
@@ -130,5 +120,20 @@ class SenderProfileHelper {
     return input < 10
       ? '0$input'
       : 'input';
+  }
+
+  static String formatTime(DateTime input) {
+    String minute = SenderProfileHelper.ensureDoubleDigit(input.minute);
+    String hour   = input.hour.toString();
+
+    String weekday  = SenderProfileHelper.getWeekDayFromInt(input.weekday);
+    int day         = input.day;
+    String month    = SenderProfileHelper.getMonthFromInt(input.month);
+    int year        = input.year;
+
+    String date = '$weekday, $month $day, $year';
+    String time = '$hour:$minute';
+
+    return '$date at $time';
   }
 }
