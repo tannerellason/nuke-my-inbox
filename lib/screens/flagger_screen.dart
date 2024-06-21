@@ -72,7 +72,7 @@ class FlaggerScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
+            if (senderProfile.numberOfUnsubLinks != 0) Padding(
               padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton.small(
                 tooltip: 'Show unsubscribe links',
@@ -84,6 +84,14 @@ class FlaggerScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: Provider.of<StateProvider>(context, listen: false).buildUnsubLinks(senderProfile),
                     ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
+                      )
+                    ]
                   )
                 ),
                 

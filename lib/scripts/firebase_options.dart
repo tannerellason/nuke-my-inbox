@@ -42,7 +42,7 @@ class DefaultFirebaseOptions {
 
   static String get clientId {
     if (kIsWeb) {
-      return '1031401823307-n1s116c4mortggf8dchnojmo8pupleot.apps.googleusercontent.com';
+      return '1031401823307-8lmkmj411lg5dk45uuud7mg5tm8lev6d.apps.googleusercontent.com';
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -65,13 +65,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBs7Rpq6-wPzBD1xun40cgbBVMD6RR_u3s',
-    appId: '1:1031401823307:web:dbc9d48d51a60e797581ce',
+    apiKey: 'AIzaSyAxf7eTPY3eajR5QYsx5KM7z00AruC9FXE',
+    appId: '1:1031401823307:web:496ded429bd9cab47581ce',
     messagingSenderId: '1031401823307',
     projectId: 'nuke-my-inbox',
     authDomain: 'nuke-my-inbox.firebaseapp.com',
     storageBucket: 'nuke-my-inbox.appspot.com',
-    measurementId: 'G-CPKDK98L75',
+    measurementId: 'G-52RTYZT3MM',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -88,6 +88,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1031401823307',
     projectId: 'nuke-my-inbox',
     storageBucket: 'nuke-my-inbox.appspot.com',
+    androidClientId: '1031401823307-ihbp4ionvp17k9td993eld9cmd0ba210.apps.googleusercontent.com',
     iosClientId: '1031401823307-a8f1u2nlgd5a26fc1m3uk6vk009nv4kq.apps.googleusercontent.com',
     iosBundleId: 'com.tannerellason.nukemyinbox',
   );
