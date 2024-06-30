@@ -3,9 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StatusHandler {
-  static List<Column> collectionStatusBuilder(int numberCollected, int totalMessages, int millisElapsed) {
+  static List<Column> collectionStatusBuilder(int numberCollected, int totalMessages, int millisElapsed, int millisForLast25) {
     double secondsElapsed = millisElapsed / 1000;
-    double collectionsPerSecond = numberCollected / secondsElapsed;
+    double collectionsPerSecond = numberCollected >= 25
+        ? 25 / (millisForLast25 / 1000)
+        : numberCollected / secondsElapsed;
     String collectionsPerSecondString = collectionsPerSecond.toStringAsPrecision(4);
 
     String timeElapsed = secondsElapsed > 60

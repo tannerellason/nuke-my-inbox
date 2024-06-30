@@ -88,6 +88,9 @@ class StateProvider extends ChangeNotifier {
     if (_collectionStarted) return;
     _collectionStarted = true;
 
+    List<int> messageTimes = [];
+    int millisForLast25 = 0;
+
     List<Message> messages = [];
     
     if (_collectAll) _messagesToCollect = _maxMessages;
@@ -108,17 +111,22 @@ class StateProvider extends ChangeNotifier {
       for (Message message in listResponse) {
         messages.add(await GmailHandler.getMessage(_gmailApi, message.id!));
 
+        messageTimes.insert(0, collectionStopwatch.elapsedMilliseconds);
+        if (messageTimes.length > 25) {
+          millisForLast25 = messageTimes[0] - messageTimes[24];
+        }
+
         count++;
         if (count > _messagesToCollect) break;
 
-        setStatusWidgets(StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds));
-
+        setStatusWidgets(StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds, millisForLast25));
         notifyListeners();
       }
       if (count >= _messagesToCollect) break;
     }
 
     setStatusWidgets(StatusHandler.stringStatusBuilder('Please wait for emails to be processed'));
+    notifyListeners();
 
     _senderProfiles = await GmailHandler.processMessages(messages);
 
