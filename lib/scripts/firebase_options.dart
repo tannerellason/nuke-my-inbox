@@ -43,25 +43,7 @@ class DefaultFirebaseOptions {
   static String get clientId {
     if (kIsWeb) {
       return '1031401823307-8lmkmj411lg5dk45uuud7mg5tm8lev6d.apps.googleusercontent.com';
-    }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        return '';
-      case TargetPlatform.iOS:
-        return '1031401823307-a8f1u2nlgd5a26fc1m3uk6vk009nv4kq.apps.googleusercontent.com';
-      case TargetPlatform.macOS:
-        return 'com.googleusercontent.apps.1031401823307-nnuald2l89jpehervv54b96pcgre19uj';
-      case TargetPlatform.windows:
-        return 'Windows is currently not supported. Support coming soon.';
-      case TargetPlatform.linux:
-        throw UnsupportedError(
-          'Linux is not supported by firebase, and thus this app entirely'
-        );
-      default:
-        throw UnsupportedError(
-          'The platform you are trying to use this on is not supported.'
-        );
-    }
+    } else return '';
   }
 
   static const FirebaseOptions web = FirebaseOptions(
