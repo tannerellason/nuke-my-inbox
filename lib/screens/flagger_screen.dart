@@ -79,6 +79,7 @@ class FlaggerScreen extends StatelessWidget {
                 onPressed: () => showDialog<String>(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
+                    scrollable: true,
                     title: Text('Unsubscribe links for ${senderProfile.name}'),
                     content: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -109,8 +110,8 @@ class FlaggerScreen extends StatelessWidget {
                     content: const Text('Are you sure?'),
                     actions: [
                       TextButton(
-                        onPressed: () {
-                          Provider.of<StateProvider>(context, listen: false).trashMessages(senderProfile);
+                        onPressed: () async {
+                          await Provider.of<StateProvider>(context, listen: false).trashMessages(senderProfile);
                           Navigator.of(context).pop();
                         },
                         child: const Text('Yes'),
@@ -166,8 +167,8 @@ class FlaggerScreen extends StatelessWidget {
                             ),
                             actions: [
                               if (Provider.of<StateProvider>(context).validConfirmation) TextButton(
-                                onPressed: () {
-                                  Provider.of<StateProvider>(context, listen: false).permaDeleteMessages(senderProfile);
+                                onPressed: () async {
+                                  await Provider.of<StateProvider>(context, listen: false).permaDeleteMessages(senderProfile);
                                   Navigator.of(context).pop();
                                   Navigator.of(context).pop();
                                 },

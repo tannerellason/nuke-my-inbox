@@ -125,15 +125,15 @@ class StateProvider extends ChangeNotifier {
     setStatusWidgets(StatusHandler.doneProcessingBuilder(context)); // ignore: use_build_context_synchronously
   }
 
-  void trashMessages(SenderProfile profile) {
+  Future<void> trashMessages(SenderProfile profile) async {
     for (Message message in profile.messages) 
-      GmailHandler.trashMessage(_gmailApi, message.id!);
+      await GmailHandler.trashMessage(_gmailApi, message.id!);
     profile.handled = true;
     notifyListeners();
   }
 
-  void permaDeleteMessages(SenderProfile profile) {
-    GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
+  Future<void> permaDeleteMessages(SenderProfile profile) async {
+    await GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
     profile.handled = true;
     _confirmation = '';
     notifyListeners();
