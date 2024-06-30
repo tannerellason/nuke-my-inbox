@@ -45,6 +45,7 @@ class LoginScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text('I started this project to teach myself APIs and Flutter. I hope you can find it useful.'),
+                        const Text('Please report all problems to either the GitHub repo or to tannerellasondev@gmail.com'),
                         TextButton(
                           onPressed: () => launchUrl(Uri.parse('https://flutter.dev/?gad_source=1&gclid=CjwKCAjwhIS0BhBqEiwADAUhc-s_FRL2YkeVdacFyksxepd43YjXFpZBRtU1Q9_uLbo3GYUh5XZmbRoCWkMQAvD_BwE&gclsrc=aw.ds')),
                           child: const Text('Built with Flutter v3.22.2'),
