@@ -1,1 +1,57 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"nuke-my-inbox","appId":"1:1031401823307:android:d4af2708e0d945877581ce","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"nuke-my-inbox","configurations":{"android":"1:1031401823307:android:059c82c8487d48327581ce","ios":"1:1031401823307:ios:ad4115013e8aac0e7581ce"}},"lib/scripts/firebase_options.dart":{"projectId":"nuke-my-inbox","configurations":{"android":"1:1031401823307:android:d4af2708e0d945877581ce","ios":"1:1031401823307:ios:91dd2c0505d6e3747581ce","web":"1:1031401823307:web:496ded429bd9cab47581ce"}}},"ios":{"default":{"projectId":"nuke-my-inbox","appId":"1:1031401823307:ios:91dd2c0505d6e3747581ce","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"macos":{"default":{"projectId":"nuke-my-inbox","appId":"1:1031401823307:ios:ad4115013e8aac0e7581ce","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "nuke-my-inbox",
+          "appId": "1:1031401823307:android:d4af2708e0d945877581ce",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "nuke-my-inbox",
+          "configurations": {
+            "android": "1:1031401823307:android:059c82c8487d48327581ce",
+            "ios": "1:1031401823307:ios:ad4115013e8aac0e7581ce"
+          }
+        },
+        "lib/scripts/firebase_options.dart": {
+          "projectId": "nuke-my-inbox",
+          "configurations": {
+            "android": "1:1031401823307:android:d4af2708e0d945877581ce",
+            "ios": "1:1031401823307:ios:91dd2c0505d6e3747581ce",
+            "web": "1:1031401823307:web:496ded429bd9cab47581ce"
+          }
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "nuke-my-inbox",
+          "appId": "1:1031401823307:ios:91dd2c0505d6e3747581ce",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "nuke-my-inbox",
+          "appId": "1:1031401823307:ios:ad4115013e8aac0e7581ce",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      }
+    }
+  },
+  "hosting": {
+    "source": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "frameworksBackend": {
+      "region": "us-central1"
+    }
+  }
+}

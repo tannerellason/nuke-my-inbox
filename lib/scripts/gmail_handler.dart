@@ -5,7 +5,6 @@ import 'package:googleapis/gmail/v1.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'dart:async';
-import 'sender_profile.dart';
 
 class GmailHandler {
 
@@ -62,42 +61,6 @@ class GmailHandler {
       await api.users.messages.trash('me', messageId);
     });
   }
-
-  static Future<List<SenderProfile>> processMessages(List<Message> messages) async {
-    List<SenderProfile> profiles = [];
-
-    for (Message message in messages) {
-      String sender  = Utils.getSenderFromMessage(message);
-      String name    = Utils.getNameFromSender(sender);
-      String email   = Utils.getEmailFromSender(sender);
-      String link    = Utils.getLinkFromPayload(message.payload!);
-      DateTime time  = Utils.getDateTimeFromMessage(message);
-      String snippet = message.snippet!;
-      if (snippet.length >= 50) {
-        snippet = '${snippet.substring(0, 49)}...';
-      }
-
-      bool senderFound = false;
-      for (SenderProfile profile in profiles) {
-        if (profile.sender != sender) continue;
-
-        profile.addMessage(message);
-        if (!profile.unsubLinks.contains(link)) profile.addLink(link);
-        senderFound = true;
-        
-      }
-
-      if (!senderFound) {
-        SenderProfile profile = SenderProfile(sender, name, email, message, link, time, snippet);
-        profiles.add(profile);
-      }
-    }
-
-    profiles.sort((a, b) => b.numberOfMessages.compareTo(a.numberOfMessages));
-
-    return profiles;
-  }
-
 }
 
 class Utils {

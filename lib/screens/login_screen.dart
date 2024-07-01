@@ -33,44 +33,61 @@ class LoginScreen extends StatelessWidget {
               ),
             ],
           ),
+          const Padding(padding: EdgeInsets.only(top: 100),),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('I started this project to teach myself APIs and Flutter. I hope you find it useful :)'),
+            ],
+          ),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Please report all problems to either the GitHub repo or to tannerellasondev@gmail.com'),
+            ]
+          ),
+          const Padding(padding: EdgeInsets.only(top: 100),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                onPressed: () => showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: const Text('About this project'),
-                    content: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('I started this project to teach myself APIs and Flutter. I hope you can find it useful.'),
-                        const Text('Please report all problems to either the GitHub repo or to tannerellasondev@gmail.com'),
-                        TextButton(
-                          onPressed: () => launchUrl(Uri.parse('https://flutter.dev/?gad_source=1&gclid=CjwKCAjwhIS0BhBqEiwADAUhc-s_FRL2YkeVdacFyksxepd43YjXFpZBRtU1Q9_uLbo3GYUh5XZmbRoCWkMQAvD_BwE&gclsrc=aw.ds')),
-                          child: const Text('Built with Flutter v3.22.2'),
-                        ),
-                        TextButton(
-                          onPressed: () => launchUrl(Uri.parse('https://github.com/tannerellason/nuke-my-inbox')),
-                          child: const Text('Source code hosted by GitHub'),
-                        ),
-                        TextButton(
-                          onPressed: () => launchUrl(Uri.parse('Ko-fi.com/tannerellason')),
-                          child: const Text('Any donations towards my college fund are greatly appreciated!!'),
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Cancel'),
-                      )
-                    ]
-                  )
-                ),
-                child: const Text('Or click here for info about this project'),
+                onPressed: () => launchUrl(Uri.parse('https://flutter.dev/?gad_source=1&gclid=CjwKCAjwhIS0BhBqEiwADAUhc-s_FRL2YkeVdacFyksxepd43YjXFpZBRtU1Q9_uLbo3GYUh5XZmbRoCWkMQAvD_BwE&gclsrc=aw.ds')),
+                child: const Text('Built with flutter v3.22.2'),
               )
             ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => launchUrl(Uri.parse('https://github.com/tannerellason/nuke-my-inbox')),
+                child: const Text('Source code'),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => launchUrl(Uri.parse('https://Ko-fi.com/tannerellason')),
+                child: const Text('Any donations towards my college fund are greatly appreciated!!'),
+              ),
+            ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => launchUrl(Uri.parse('https://www.termsfeed.com/live/e7579a6d-4571-4c05-a937-dc5d959253b6')),
+                child: const Text('Privacy Policy'),
+              )
+            ],
+          ),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Long story short: everything is client side. We do not store anything.')
+            ],
           )
         ],
       ),

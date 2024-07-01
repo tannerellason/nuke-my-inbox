@@ -88,7 +88,8 @@ class StateProvider extends ChangeNotifier {
     if (_collectionStarted) return;
     _collectionStarted = true;
 
-    List<Message> messages = [];
+    List<int> messageTimes = [];
+    int millisForLast25 = 0;
     
     if (_collectAll) _messagesToCollect = _maxMessages;
 
@@ -105,35 +106,58 @@ class StateProvider extends ChangeNotifier {
       
       List<Message> listResponse = await GmailHandler.listMessages(_gmailApi, messagesPerCall, pageToken);
 
-      for (Message message in listResponse) {
-        messages.add(await GmailHandler.getMessage(_gmailApi, message.id!));
+      for (Message msg in listResponse) {
+        Message message = await GmailHandler.getMessage(_gmailApi, msg.id!);
+
+        String sender  = Utils.getSenderFromMessage(message);
+        String name    = Utils.getNameFromSender(sender);
+        String email   = Utils.getEmailFromSender(sender);
+        String link    = Utils.getLinkFromPayload(message.payload!);
+        DateTime time  = Utils.getDateTimeFromMessage(message);
+        String snippet = message.snippet!;
+
+        if (snippet.length >= 50) snippet = '${snippet.substring(0, 49)}...';
+
+        bool senderFound = false;
+        for (SenderProfile profile in _senderProfiles) {
+          if (profile.sender != sender) continue;
+
+          if (!profile.unsubLinks.contains(link)) profile.addLink(link);
+          senderFound = true;
+        }
+
+        if (!senderFound)
+          _senderProfiles.add(SenderProfile(sender, name, email, message, link, time, snippet));
+
+        messageTimes.insert(0, collectionStopwatch.elapsedMilliseconds);
+        if (messageTimes.length > 25) {
+          millisForLast25 = messageTimes[0] - messageTimes[24];
+        }
 
         count++;
         if (count > _messagesToCollect) break;
 
-        setStatusWidgets(StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds));
-
+        setStatusWidgets(StatusHandler.collectionStatusBuilder(count, _messagesToCollect, collectionStopwatch.elapsedMilliseconds, millisForLast25));
         notifyListeners();
       }
+
       if (count >= _messagesToCollect) break;
     }
 
-    setStatusWidgets(StatusHandler.stringStatusBuilder('Please wait for emails to be processed'));
-
-    _senderProfiles = await GmailHandler.processMessages(messages);
+    _senderProfiles.sort((a, b) => b.numberOfMessages.compareTo(a.numberOfMessages));
 
     setStatusWidgets(StatusHandler.doneProcessingBuilder(context)); // ignore: use_build_context_synchronously
   }
 
-  void trashMessages(SenderProfile profile) {
+  Future<void> trashMessages(SenderProfile profile) async {
     for (Message message in profile.messages) 
-      GmailHandler.trashMessage(_gmailApi, message.id!);
+      await GmailHandler.trashMessage(_gmailApi, message.id!);
     profile.handled = true;
     notifyListeners();
   }
 
-  void permaDeleteMessages(SenderProfile profile) {
-    GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
+  Future<void> permaDeleteMessages(SenderProfile profile) async {
+    await GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
     profile.handled = true;
     _confirmation = '';
     notifyListeners();
