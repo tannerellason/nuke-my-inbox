@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:nuke_my_inbox/scripts/state_provider.dart';
 import 'package:nuke_my_inbox/scripts/sender_profile.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FlaggerScreen extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
@@ -11,12 +12,6 @@ class FlaggerScreen extends StatelessWidget {
     List<SenderProfile>? senderProfiles = Provider.of<StateProvider>(context).senderProfiles;
     List<Widget> widgetList = [];
     widgetList.add(const Padding(padding: EdgeInsets.only(top: 30)));
-    if (!Provider.of<StateProvider>(context, listen: false).onFlagger) widgetList.add(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: Provider.of<StateProvider>(context, listen: false).statusWidgets
-      )
-    );
     widgetList.add(
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -258,6 +253,37 @@ class FlaggerScreen extends StatelessWidget {
       body: ListView(
         children: _buildList(context),
       ),
+      persistentFooterButtons: [
+        Text(
+          Provider.of<StateProvider>(context, listen: false).status
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => Provider.of<StateProvider>(context, listen: false).signOut(context),
+          child: const Text('Change user'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.flutter.dev')),
+          child: const Text('Built with flutter'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://github.com/tannerellason/nuke-my-inbox')),
+          child: const Text('Source code'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.Ko-fi.com/tannerellason')),
+          child: const Text('Ko-Fi'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.termsfeed.com/live/e7579a6d-4571-4c05-a937-dc5d959253b6')),
+          child: const Text('Privacy Policy'),
+        )
+      ],
+
     );
   }
 }
