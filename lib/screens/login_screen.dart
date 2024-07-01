@@ -11,86 +11,89 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to Nuke My Inbox v0.2'),
+        title: const Text('Welcome to Nuke My Inbox v0.2.1'),
         centerTitle: true,
       ),
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'The best way to clean your email inbox',
-              ),
-            ],
-          ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Sign in to get started',
-              ),
-            ],
-          ),
-          const Padding(padding: EdgeInsets.only(top: 100),),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('I started this project to teach myself APIs and Flutter. I hope you find it useful :)'),
-            ],
-          ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Please report all problems to either the GitHub repo or to tannerellasondev@gmail.com'),
-            ]
-          ),
-          const Padding(padding: EdgeInsets.only(top: 100),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(
-                onPressed: () => launchUrl(Uri.parse('https://flutter.dev/?gad_source=1&gclid=CjwKCAjwhIS0BhBqEiwADAUhc-s_FRL2YkeVdacFyksxepd43YjXFpZBRtU1Q9_uLbo3GYUh5XZmbRoCWkMQAvD_BwE&gclsrc=aw.ds')),
-                child: const Text('Built with flutter v3.22.2'),
+              Text(
+                'I started this project to teach myself about APIs, as well as building apps with flutter.'
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 25)
+          ),
+
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'This app will collect the number of emails you specify. It will then find all'
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('unsubscribe links within those emails and place them on a single page.')
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('You can also trash / delete all messages from a sender.'),
+            ]
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 25)
+          ),
+
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Absolutely zero information is stored, aside from debug information collected by Google.'
               )
             ]
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(
-                onPressed: () => launchUrl(Uri.parse('https://github.com/tannerellason/nuke-my-inbox')),
-                child: const Text('Source code'),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () => launchUrl(Uri.parse('https://Ko-fi.com/tannerellason')),
-                child: const Text('Any donations towards my college fund are greatly appreciated!!'),
-              ),
+              Text(
+                'All emails are processed client side. NO DATA IS COLLECTED FROM THE PROCESSED MESSAGES.'
+              )
             ]
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () => launchUrl(Uri.parse('https://www.termsfeed.com/live/e7579a6d-4571-4c05-a937-dc5d959253b6')),
-                child: const Text('Privacy Policy'),
-              )
-            ],
-          ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Long story short: everything is client side. We do not store anything other than analytics.')
-            ],
-          )
         ],
       ),
+      persistentFooterButtons: [
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.flutter.dev')),
+          child: const Text('Built with flutter'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://github.com/tannerellason/nuke-my-inbox')),
+          child: const Text('Source code'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.Ko-fi.com/tannerellason')),
+          child: const Text('Ko-Fi'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.termsfeed.com/live/e7579a6d-4571-4c05-a937-dc5d959253b6')),
+          child: const Text('Privacy Policy'),
+        )
+      ],
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Sign in'),
         icon: const Icon(Icons.login),
