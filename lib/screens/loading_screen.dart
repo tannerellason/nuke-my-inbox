@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:nuke_my_inbox/scripts/state_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
@@ -19,6 +20,33 @@ class LoadingScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: Provider.of<StateProvider>(context, listen: false).statusWidgets
       ),
+      persistentFooterButtons: [        
+        TextButton(
+          onPressed: () => Provider.of<StateProvider>(context, listen: false).signOut(context),
+          child: const Text('Change user'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.flutter.dev')),
+          child: const Text('Built with flutter'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://github.com/tannerellason/nuke-my-inbox')),
+          child: const Text('Source code'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.Ko-fi.com/tannerellason')),
+          child: const Text('Ko-Fi'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.termsfeed.com/live/e7579a6d-4571-4c05-a937-dc5d959253b6')),
+          child: const Text('Privacy Policy'),
+        )
+      ],
+
     );
   }
 }

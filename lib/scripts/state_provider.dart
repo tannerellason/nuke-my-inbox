@@ -12,7 +12,7 @@ import 'gmail_handler.dart';
 
 class StateProvider extends ChangeNotifier {
 
-  late final GmailApi _gmailApi;
+  GmailApi? _gmailApi;
   String _status = '';
   List<Column> _statusWidgets = [];
   List<SenderProfile> _senderProfiles = []; // ignore: prefer_final_fields
@@ -85,9 +85,16 @@ class StateProvider extends ChangeNotifier {
   void signInWithGoogle(BuildContext context) async {
     setStatusWidgets(StatusHandler.stringStatusBuilder('Initializing gmail, please wait'));
     _gmailApi = await AuthHandler.initGmailApi();
-    Profile profile = await _gmailApi.users.getProfile('me');
+    Profile profile = await _gmailApi!.users.getProfile('me');
     _maxMessages = profile.messagesTotal!;
     context.go('/settings');     // ignore: use_build_context_synchronously
+  }
+
+  void signOut(BuildContext context) async {
+    await AuthHandler.signOut();
+    _gmailApi = null;
+    _maxMessages = 0;
+    context.pop(); // ignore: use_build_context_synchronously
   }
 
   Future<void> collectEmails(BuildContext context) async {
@@ -110,10 +117,10 @@ class StateProvider extends ChangeNotifier {
     int count = 0;
     while (true) {
       
-      List<Message> listResponse = await GmailHandler.listMessages(_gmailApi, messagesPerCall, pageToken);
+      List<Message> listResponse = await GmailHandler.listMessages(_gmailApi!, messagesPerCall, pageToken);
 
       for (Message msg in listResponse) {
-        Message message = await GmailHandler.getMessage(_gmailApi, msg.id!);
+        Message message = await GmailHandler.getMessage(_gmailApi!, msg.id!);
 
         String sender  = Utils.getSenderFromMessage(message);
         String name    = Utils.getNameFromSender(sender);
@@ -167,28 +174,25 @@ class StateProvider extends ChangeNotifier {
   }
 
   void trashMessagesRecursively(SenderProfile profile, int depth) async {
-    print('depth: $depth');
     if (depth == 0 && trashing == true) return;
     trashing = true;
     if (messageIds.isEmpty) {
       trashing = false;
-      setStatusWidgets(StatusHandler.stringStatusBuilder('Done trashing messages for ${profile.sender}'));
+      setStatus('Done trashing messages. It is safe to leave.');
       return;
     }
 
     String messageId = messageIds[0];
-    await GmailHandler.trashMessage(_gmailApi, messageId);
+    await GmailHandler.trashMessage(_gmailApi!, messageId);
 
-    setStatusWidgets(StatusHandler.stringStatusBuilder('Still deleting ${messageIds.length} messages. Do not close this tab!'));
-    print(messageIds.length);
+    setStatus('Still trashing messages. Do not close this tab!');
 
     messageIds.removeAt(0);
-    print(messageIds.length);
     trashMessagesRecursively(profile, depth + 1);
   }
 
   Future<void> permaDeleteMessages(SenderProfile profile) async {
-    await GmailHandler.permaDeleteMessages(_gmailApi, profile.messageIds);
+    await GmailHandler.permaDeleteMessages(_gmailApi!, profile.messageIds);
     profile.handled = true;
     _confirmation = '';
     notifyListeners();

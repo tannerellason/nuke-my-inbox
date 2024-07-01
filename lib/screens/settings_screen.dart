@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:nuke_my_inbox/scripts/state_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -58,7 +59,7 @@ class SettingsScreen extends StatelessWidget {
                     width: 50,
                     child: Center(
                       child: Text(
-                        'Min: \n1'
+                        'Min:\n1'
                       ),
                     ),
                   ),
@@ -93,6 +94,33 @@ class SettingsScreen extends StatelessWidget {
           ),
         ),
       ),
+      persistentFooterButtons: [
+        TextButton(
+          onPressed: () => Provider.of<StateProvider>(context, listen: false).signOut(context),
+          child: const Text('Change user'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.flutter.dev')),
+          child: const Text('Built with flutter'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://github.com/tannerellason/nuke-my-inbox')),
+          child: const Text('Source code'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.Ko-fi.com/tannerellason')),
+          child: const Text('Ko-Fi'),
+        ),
+        const VerticalDivider(),
+        TextButton(
+          onPressed: () => launchUrl(Uri.parse('https://www.termsfeed.com/live/e7579a6d-4571-4c05-a937-dc5d959253b6')),
+          child: const Text('Privacy Policy'),
+        )
+      ],
+
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Next page'),
         icon: const Icon(Icons.navigate_next),
