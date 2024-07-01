@@ -15,7 +15,7 @@ class StatusHandler {
         : '${secondsElapsed.toInt()} seconds elapsed';
     
     int messagesRemaining = totalMessages - numberCollected;
-    int estimatedSecondsRemaining = messagesRemaining ~/ collectionsPerSecond;
+    int estimatedSecondsRemaining = messagesRemaining ~/ (numberCollected / secondsElapsed);
     String estimatedTimeRemaining = estimatedSecondsRemaining > 60
         ? '${estimatedSecondsRemaining ~/ 60} minutes, ${estimatedSecondsRemaining % 60} seconds remaining'
         : '$estimatedSecondsRemaining seconds remaining';

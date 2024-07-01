@@ -11,6 +11,12 @@ class FlaggerScreen extends StatelessWidget {
     List<SenderProfile>? senderProfiles = Provider.of<StateProvider>(context).senderProfiles;
     List<Widget> widgetList = [];
     widgetList.add(const Padding(padding: EdgeInsets.only(top: 30)));
+    if (!Provider.of<StateProvider>(context, listen: false).onFlagger) widgetList.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: Provider.of<StateProvider>(context, listen: false).statusWidgets
+      )
+    );
     widgetList.add(
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -110,8 +116,8 @@ class FlaggerScreen extends StatelessWidget {
                     content: const Text('Are you sure?'),
                     actions: [
                       TextButton(
-                        onPressed: () async {
-                          await Provider.of<StateProvider>(context, listen: false).trashMessages(senderProfile);
+                        onPressed: () {
+                          Provider.of<StateProvider>(context, listen: false).trashMessages(senderProfile);
                           Navigator.of(context).pop();
                         },
                         child: const Text('Yes'),
@@ -167,8 +173,8 @@ class FlaggerScreen extends StatelessWidget {
                             ),
                             actions: [
                               if (Provider.of<StateProvider>(context).validConfirmation) TextButton(
-                                onPressed: () async {
-                                  await Provider.of<StateProvider>(context, listen: false).permaDeleteMessages(senderProfile);
+                                onPressed: () {
+                                  Provider.of<StateProvider>(context, listen: false).permaDeleteMessages(senderProfile);
                                   Navigator.of(context).pop();
                                   Navigator.of(context).pop();
                                 },
