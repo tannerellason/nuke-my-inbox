@@ -18,6 +18,7 @@ class GmailHandler {
   // 
   // List and get all have a delay of 0 because I haven't seen them
   // overwhelm the API yet. Any issues should be reported.
+  
   static const Duration delayBetweenLists = Duration(milliseconds: 0);
   static const Duration delayBetweenGets = Duration(milliseconds: 0);
   static const Duration delayBetweenBatchDeletes = Duration(milliseconds: 200);
@@ -42,11 +43,11 @@ class GmailHandler {
     return message!;
   }
 
-  static Future<void> permaDeleteMessages(GmailApi api, List<Message> messages) async {
+  static Future<void> permaDeleteMessages(GmailApi api, List<String> messageIds) async {
     List<String> idsToDelete = [];
 
-    for (Message message in messages) {
-      idsToDelete.add(message.id!);
+    for (String messageId in messageIds) {
+      idsToDelete.add(messageId);
     }
 
     BatchDeleteMessagesRequest request = BatchDeleteMessagesRequest(ids: idsToDelete);

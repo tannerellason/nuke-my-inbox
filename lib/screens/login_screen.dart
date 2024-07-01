@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to Nuke My Inbox v0.1'),
+        title: const Text('Welcome to Nuke My Inbox v0.2'),
         centerTitle: true,
       ),
       body: Column(
@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Long story short: everything is client side. We do not store anything.')
+              Text('Long story short: everything is client side. We do not store anything other than analytics.')
             ],
           )
         ],

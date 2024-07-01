@@ -23,6 +23,7 @@ class StateProvider extends ChangeNotifier {
   bool _showAll = false;
   int _maxMessages = 0;
   String _confirmation = '';
+  bool _onFlagger = true;
 
   String get status => _status;
   List<Column> get statusWidgets => _statusWidgets;
@@ -34,6 +35,7 @@ class StateProvider extends ChangeNotifier {
   int get maxMessages => _maxMessages;
   String get confirmation => _confirmation;
   bool get validConfirmation => _confirmation == 'DELETE';
+  bool get onFlagger => _onFlagger;
 
   void setStatus(String value) {
     _status = value;
@@ -71,6 +73,10 @@ class StateProvider extends ChangeNotifier {
   }
   void setConfirmation(String value) {
     _confirmation = value;
+    notifyListeners();
+  }
+  void setOnFlagger(bool value) {
+    _onFlagger = value;
     notifyListeners();
   }
 
@@ -122,12 +128,13 @@ class StateProvider extends ChangeNotifier {
         for (SenderProfile profile in _senderProfiles) {
           if (profile.sender != sender) continue;
 
+          profile.addMessageId(message.id!);
           if (!profile.unsubLinks.contains(link)) profile.addLink(link);
           senderFound = true;
         }
 
         if (!senderFound)
-          _senderProfiles.add(SenderProfile(sender, name, email, message, link, time, snippet));
+          _senderProfiles.add(SenderProfile(sender, name, email, message.id!, link, time, snippet));
 
         messageTimes.insert(0, collectionStopwatch.elapsedMilliseconds);
         if (messageTimes.length > 25) {
@@ -149,15 +156,39 @@ class StateProvider extends ChangeNotifier {
     setStatusWidgets(StatusHandler.doneProcessingBuilder(context)); // ignore: use_build_context_synchronously
   }
 
-  Future<void> trashMessages(SenderProfile profile) async {
-    for (Message message in profile.messages) 
-      await GmailHandler.trashMessage(_gmailApi, message.id!);
+  List<String> messageIds = [];
+  bool trashing = false;
+
+  void trashMessages(SenderProfile profile) {
     profile.handled = true;
-    notifyListeners();
+    setOnFlagger(false);
+    messageIds.addAll(profile.messageIds);
+    trashMessagesRecursively(profile, 0);
+  }
+
+  void trashMessagesRecursively(SenderProfile profile, int depth) async {
+    print('depth: $depth');
+    if (depth == 0 && trashing == true) return;
+    trashing = true;
+    if (messageIds.isEmpty) {
+      trashing = false;
+      setStatusWidgets(StatusHandler.stringStatusBuilder('Done trashing messages for ${profile.sender}'));
+      return;
+    }
+
+    String messageId = messageIds[0];
+    await GmailHandler.trashMessage(_gmailApi, messageId);
+
+    setStatusWidgets(StatusHandler.stringStatusBuilder('Still deleting ${messageIds.length} messages. Do not close this tab!'));
+    print(messageIds.length);
+
+    messageIds.removeAt(0);
+    print(messageIds.length);
+    trashMessagesRecursively(profile, depth + 1);
   }
 
   Future<void> permaDeleteMessages(SenderProfile profile) async {
-    await GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
+    await GmailHandler.permaDeleteMessages(_gmailApi, profile.messageIds);
     profile.handled = true;
     _confirmation = '';
     notifyListeners();
@@ -166,40 +197,6 @@ class StateProvider extends ChangeNotifier {
   void dismissSender(SenderProfile profile) {
     profile.handled = true;
     notifyListeners();
-  }
-
-  void handleFlags() async {
-    List<String> statusLines = [ 'Initializing...' ];
-    setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines)); 
-
-    for (SenderProfile profile in _senderProfiles) {
-      if (!profile.flagged) continue;
-
-      _flaggedLinks.addAll(profile.unsubLinks);
-
-      if (profile.permaDelete) {
-        statusLines.add('Permanently deleting messages from ${profile.name} ...');
-        setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines));
-
-        await GmailHandler.permaDeleteMessages(_gmailApi, profile.messages);
-
-        statusLines.last = 'Permanently deleting messages from ${profile.name} ... Done';
-        setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines));
-      }
-
-      else if (profile.trash) {
-        statusLines.add('Trashing messages from ${profile.name} ...');
-        setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines));
-
-        for (int i = 0; i < profile.numberOfMessages; i++) {
-          await GmailHandler.trashMessage(_gmailApi, profile.messages[i].id!);
-        }
-
-        statusLines.last = 'Trashing messages from ${profile.name} ... Done';
-        setStatusWidgets(StatusHandler.flagHandlerStatusBuilder(statusLines));
-
-      }
-    }
   }
 
   List<Widget> buildUnsubLinks(SenderProfile profile) {
