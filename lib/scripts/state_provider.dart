@@ -185,7 +185,7 @@ class StateProvider extends ChangeNotifier {
     String messageId = messageIds[0];
     await GmailHandler.trashMessage(_gmailApi!, messageId);
 
-    setStatus('Still trashing messages. Do not close this tab!');
+    setStatus('Still trashing messages ($depth/${messageIds.length + depth - 1}). Do not close this tab!');
 
     messageIds.removeAt(0);
     trashMessagesRecursively(profile, depth + 1);
