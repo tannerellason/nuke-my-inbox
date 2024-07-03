@@ -10,7 +10,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to Nuke My Inbox v1.0'),
+        title: const Text('Welcome to Nuke My Inbox v1.0.1'),
         centerTitle: true,
       ),
       body: const Column(
