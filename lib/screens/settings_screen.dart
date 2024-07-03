@@ -102,7 +102,7 @@ class SettingsScreen extends StatelessWidget {
         const VerticalDivider(),
         TextButton(
           onPressed: () => launchUrl(Uri.parse('https://www.flutter.dev')),
-          child: const Text('Built with flutter'),
+          child: const Text('Built with Flutter'),
         ),
         const VerticalDivider(),
         TextButton(
@@ -125,7 +125,7 @@ class SettingsScreen extends StatelessWidget {
         label: const Text('Next page'),
         icon: const Icon(Icons.navigate_next),
         onPressed: () {
-          context.go('/settings/loading');
+          context.go('/privacy/settings/loading');
           Provider.of<StateProvider>(context, listen: false).collectEmails(context);
         }
       ),

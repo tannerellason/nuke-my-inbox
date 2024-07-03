@@ -87,7 +87,7 @@ class StateProvider extends ChangeNotifier {
     _gmailApi = await AuthHandler.initGmailApi();
     Profile profile = await _gmailApi!.users.getProfile('me');
     _maxMessages = profile.messagesTotal!;
-    context.go('/settings');     // ignore: use_build_context_synchronously
+    context.go('/privacy/settings');     // ignore: use_build_context_synchronously
   }
 
   void signOut(BuildContext context) async {

@@ -8,6 +8,7 @@ import 'screens/login_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/loading_screen.dart';
 import 'screens/flagger_screen.dart';
+import 'screens/privacy_statement.dart';
 import 'scripts/state_provider.dart';
 
 void main() {
@@ -28,27 +29,35 @@ final _router = GoRouter(
       ),
       routes: <RouteBase>[
         GoRoute(
-          path: 'settings',
+          path: 'privacy',
           builder: (context, state) => Consumer<StateProvider>(
-            builder: (context, appState, _) => SettingsScreen(),
+            builder: (context, appState, _) => PrivacyStatement(),
           ),
           routes: <RouteBase>[
             GoRoute(
-              path: 'loading',
+              path: 'settings',
               builder: (context, state) => Consumer<StateProvider>(
-                builder: (context, appState, _) => LoadingScreen(),
+                builder: (context, appState, _) => SettingsScreen(),
               ),
-              routes: <RouteBase> [
+              routes: <RouteBase>[
                 GoRoute(
-                  path: 'flagger',
+                  path: 'loading',
                   builder: (context, state) => Consumer<StateProvider>(
-                    builder: (context, appState, _) => FlaggerScreen(),
-                  )
-                )
+                    builder: (context, appState, _) => LoadingScreen(),
+                  ),
+                  routes: <RouteBase> [
+                    GoRoute(
+                      path: 'flagger',
+                      builder: (context, state) => Consumer<StateProvider>(
+                        builder: (context, appState, _) => FlaggerScreen(),
+                      )
+                    )
+                  ]
+                ),
               ]
             ),
           ]
-        ),
+        )
       ]
     ),
   ],
