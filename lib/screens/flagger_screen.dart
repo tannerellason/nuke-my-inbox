@@ -265,7 +265,7 @@ class FlaggerScreen extends StatelessWidget {
         const VerticalDivider(),
         TextButton(
           onPressed: () => launchUrl(Uri.parse('https://www.flutter.dev')),
-          child: const Text('Built with flutter'),
+          child: const Text('Built with Flutter'),
         ),
         const VerticalDivider(),
         TextButton(

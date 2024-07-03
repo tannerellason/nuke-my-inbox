@@ -76,7 +76,7 @@ class StatusHandler {
             children: [
               TextButton(
                 child: const Text('Next page'),
-                onPressed: () => context.go('/settings/loading/flagger'),
+                onPressed: () => context.go('/privacy/settings/loading/flagger'),
               ),
             ],
           )

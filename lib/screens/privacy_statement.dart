@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nuke_my_inbox/scripts/state_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LoginScreen extends StatelessWidget {
-  // ignore: use_key_in_widget_constructors
-  const LoginScreen();
+class PrivacyStatement extends StatelessWidget {
+  const PrivacyStatement({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to Nuke My Inbox v1.0'),
-        centerTitle: true,
+        title: const Text('Privacy Statement'),
       ),
       body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -19,58 +18,53 @@ class LoginScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'I started this project to teach myself about APIs, as well as building apps with flutter.'
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 25)
-          ),
-
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'This app will collect the number of emails you specify. It will then find all'
-              ),
+              Text('Due to the nature of this app, it needs a lot of access to your user information.')
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('unsubscribe links within those emails and place them on a single page.')
+              Text('This is secure - all of the source code is available publicly if you want to check for yourself.'),
+            ],
+          ),
+          Padding(padding: EdgeInsets.only(top: 100),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Absolutely everything this application does is client side. That is, a server never sees your data.')
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('You can also trash / delete all messages from a sender.'),
+              Text('The only thing a server does in this app is send the data to your computer. All processing happens locally on your machine.')
             ]
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 25)
-          ),
-
-
+          Padding(padding: EdgeInsets.only(top: 100),),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Absolutely zero information is stored, aside from debug information collected by Google.'
-              )
+              Text('If I was just some user looking to clean my inbox, I would be sketched out. I totally understand if you are.'),
             ]
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'All emails are processed client side. NO DATA IS COLLECTED FROM THE PROCESSED MESSAGES.'
-              )
-            ]
+              Text('But if you choose to continue, rest easy knowing that your information is secure.'),
+            ],
           ),
-        ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('The privacy policy is available with a link at the bottom of your screen. But through all the legalese, just know I respect your privacy'),
+            ]
+          )
+        ]
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => Provider.of<StateProvider>(context, listen: false).signInWithGoogle(context),
+        label: const Text('Sign In'),
+        icon: const Icon(Icons.login),
       ),
       persistentFooterButtons: [
         TextButton(
@@ -93,14 +87,7 @@ class LoginScreen extends StatelessWidget {
           child: const Text('Privacy Policy'),
         )
       ],
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('Sign in'),
-        icon: const Icon(Icons.login),
-        onPressed: () {
-          context.go('/privacy');
-        }
-      ),
-
     );
   }
+
 }
