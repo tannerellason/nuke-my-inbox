@@ -27,7 +27,8 @@ class PrivacyStatement extends StatelessWidget {
               Text('This is secure - all of the source code is available publicly if you want to check for yourself.'),
             ],
           ),
-          Padding(padding: EdgeInsets.only(top: 100),),
+          Padding(padding: EdgeInsets.only(top: 25),),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -40,7 +41,8 @@ class PrivacyStatement extends StatelessWidget {
               Text('The only thing a server does in this app is send the data to your computer. All processing happens locally on your machine.')
             ]
           ),
-          Padding(padding: EdgeInsets.only(top: 100),),
+          Padding(padding: EdgeInsets.only(top: 25),),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

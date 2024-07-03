@@ -122,8 +122,8 @@ class SettingsScreen extends StatelessWidget {
       ],
 
       floatingActionButton: FloatingActionButton.extended(
-        label: const Text('Next page'),
-        icon: const Icon(Icons.navigate_next),
+        label: const Text('Start'),
+        icon: const Icon(Icons.start),
         onPressed: () {
           context.go('/privacy/settings/loading');
           Provider.of<StateProvider>(context, listen: false).collectEmails(context);

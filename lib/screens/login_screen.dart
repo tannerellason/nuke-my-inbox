@@ -94,8 +94,8 @@ class LoginScreen extends StatelessWidget {
         )
       ],
       floatingActionButton: FloatingActionButton.extended(
-        label: const Text('Sign in'),
-        icon: const Icon(Icons.login),
+        label: const Text('Privacy statement'),
+        icon: const Icon(Icons.privacy_tip),
         onPressed: () {
           context.go('/privacy');
         }
