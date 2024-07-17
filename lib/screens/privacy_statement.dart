@@ -85,7 +85,7 @@ class PrivacyStatement extends StatelessWidget {
         ),
         const VerticalDivider(),
         TextButton(
-          onPressed: () => launchUrl(Uri.parse('https://www.termsfeed.com/live/e7579a6d-4571-4c05-a937-dc5d959253b6')),
+          onPressed: () => launchUrl(Uri.parse('https://www.tannerellason.com/nuke-my-inbox-privacy-policy')),
           child: const Text('Privacy Policy'),
         )
       ],
